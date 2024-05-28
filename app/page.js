@@ -1,12 +1,14 @@
 import React from 'react';
 import Navigation from './components/Navigation';
-import Dashbooard from './components/Dashboard';
+import Dashboard from './components/Dashboard';
 
 export default function Home () {
   return (
-    <div className='bg-white'>
+    <div className=''>
       <Navigation />
-      <Dashbooard />
+      <div className='px-12 flex justify-center'>
+        <Dashboard />
+      </div>
     </div>
   )
 }
