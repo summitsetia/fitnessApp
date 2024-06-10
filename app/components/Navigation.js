@@ -19,7 +19,6 @@ const Navigation = () => {
                     </Link>
                 </div>
                 <div className='absolute left-1/2 transform -translate-x-1/2 flex items-center space-x-8'>
-                    <h1 className='text-lg font-semibold'>Dashboard</h1>
                     <h1 className='text-lg font-semibold'>Workouts</h1>
                     <Link className='text-lg font-semibold' href="/nutrition">Nutrition</Link>
                 </div>
