@@ -8,7 +8,7 @@ const Tracker = () => {
 
     const [calories, setCalories] = useState(0);
     const [fetchError, setFetchError] = useState(null)
-    const API_KEY = process.env.REACT_APP_API_KEY;
+    const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
     const foodQuantity = "80g";
     const foodName = "apple"
     
