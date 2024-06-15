@@ -7,7 +7,6 @@ import { createClient } from '../../utils/supabase/client';
 const Dashboard = () => {
     const supabase = createClient()
     const [fetchError, setFetchError] = useState(null)
-    const [data, setData] = useState(null)
     const [totalCalories, setTotalCalories] = useState(0)
 
     useEffect (() => {
@@ -24,17 +23,13 @@ const Dashboard = () => {
             if(data) {
                 console.log(data)
                 setFetchError(null)
-                setData(data)
 
-                const total = data.reduce((sum, element) => sum + element.calories, 0);
+                const total = data.reduce((accumulator, element) => accumulator + element.calories, 0);
                 setTotalCalories(total)
             }
         }
 
-
-
         fetchData()
-
 
     } , [])
 
@@ -46,7 +41,7 @@ const Dashboard = () => {
             <div className='grid grid-cols-3 gap-4'>
                 <div className='border-2 border-solid h-32 w-96 bg-white flex flex-col items-center'>
                     <h1 className='font-bold'>Calories Consumed</h1>
-                    <h1>{data && data[0] ? `${totalCalories} kcal` : '0 kcal'}</h1>
+                    <h1> {totalCalories} kcal</h1>
                     <p></p> 
                 </div>
                 <div className='border-2 border-solid h-32 w-96 bg-white flex flex-col items-center'> 
