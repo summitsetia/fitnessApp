@@ -48,13 +48,15 @@ const Tracker = () => {
         }).then((res) => {
             setCalories(res.data[0].calories);
             updateTable(res.data[0].calories)
+        }).catch((error) => {
+            console.log(error);
         })
-            
+
         }
     
     return (
         <div>
-            <div className='pt-64'>
+            <div className='pt-64 flex justify-center'>
                 <form onSubmit={handleSubmit}>
                     <input 
                         type="text"
@@ -70,9 +72,11 @@ const Tracker = () => {
                         name="foodName"
                         value={formData.foodName}
                     />
-                    <button type="submit">Hello</button>
+                    <button type="submit">Submit</button>
                 </form>
-                {calories > 0 ? <h1>{calories} kcal</h1> : <h1>Loading...</h1>}
+                <div className='pl-12'>
+                    {calories > 0 ? <h1>{calories} kcal</h1> : <h1></h1>}
+                </div>
                 <h1>{fetchError}</h1>
             </div>        
         </div>

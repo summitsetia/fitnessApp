@@ -4,9 +4,9 @@ import Dashboard from './components/Dashboard';
 
 export default function Home () {
   return (
-    <div className=''>
+    <div className='bg-[#FBFBFF]'>
       <Navigation />
-      <div className='px-12 flex justify-center'>
+      <div className='flex justify-center'>
         <Dashboard />
       </div>
     </div>
