@@ -8,6 +8,9 @@ const Dashboard = () => {
     const supabase = createClient()
     const [fetchError, setFetchError] = useState(null)
     const [totalCalories, setTotalCalories] = useState(0)
+    const [totalProtein, setTotalProtein] = useState(0)
+    const [totalCarbs, setTotalCarbs] = useState(0)
+
 
     useEffect (() => {
         const fetchData = async () => {
@@ -24,8 +27,14 @@ const Dashboard = () => {
                 console.log(data)
                 setFetchError(null)
 
-                const total = data.reduce((accumulator, element) => accumulator + element.calories, 0);
-                setTotalCalories(total)
+                const calorieTotal = data.reduce((accumulator, element) => accumulator + element.calories, 0);
+                setTotalCalories(calorieTotal)
+
+                const proteinTotal = data.reduce((accumulator, element) => accumulator + element.protein, 0);
+                setTotalProtein(proteinTotal)
+
+                const carbsTotal = data.reduce((accumulator, element) => accumulator + element.carbs, 0);
+                setTotalCarbs(carbsTotal)
             }
         }
 
@@ -34,7 +43,7 @@ const Dashboard = () => {
     } , [])
 
     return (
-        <div className='py-36 bg-[#FBFBFF]'> 
+        <div className='py-36'> 
             <div className='pb-8'>
                 <h1 className='font-bold text-5xl'>Dashboard</h1>
             </div>
@@ -46,15 +55,15 @@ const Dashboard = () => {
                 </div>
                 <div className='border-2 border-solid h-32 w-96 bg-white flex flex-col items-center rounded-md'> 
                     <h1 className='font-bold'>Protein Consumed</h1>
-                    <p>{fetchError}</p>
+                    <p>{totalProtein} g</p>
                 </div>
                 <div className='border-2 border-solid h-32 w-96 bg-white flex flex-col items-center rounded-md'>
                     <h1 className='font-bold'>Carbs Consumed</h1>
-                    <p></p>
+                    <p>{totalCarbs} g</p>
                 </div>
                 <div className='border-2 border-solid h-48 w-96 bg-white flex flex-col items-center rounded-md'>
                     <h1 className='font-bold'></h1>
-                    <p></p>
+                    <p>{fetchError}</p>
                 </div>
                 <div className='border-2 border-solid h-48 w-96 bg-white flex flex-col items-center rounded-md'>
                     <h1 className='font-bold'></h1>
