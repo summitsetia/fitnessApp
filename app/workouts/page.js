@@ -1,13 +1,13 @@
-import React from 'react';
+import React from "react";
 import Navigation from '../components/Navigation';
-import NutritionTracker from './NutritionTracker';
+import WorkoutTracker from './WorkoutTracker'
 
 export default function Home () {
     return (
         <div>
             <Navigation />
-            <div className='flex justify-center'>
-                <NutritionTracker />
+            <div className="flex justify-center">
+                <WorkoutTracker />
             </div>
         </div>
     )

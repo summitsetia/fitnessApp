@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import Axios from 'axios';
 import { createClient } from '../../utils/supabase/client';
 
-const Tracker = () => {
+const NutritionTracker = () => {
     const supabase = createClient()
 
     const [calories, setCalories] = useState(0);
@@ -23,7 +23,7 @@ const Tracker = () => {
         
         if (error) {
             console.log(error)
-            setFetchError("No calories")
+            setFetchError("There is An Error")
         }
         if (data) {
             console.log(data)
@@ -44,15 +44,16 @@ const Tracker = () => {
     const handleSubmit = (event) => {
         event.preventDefault()
 
-        Axios.get(`https://api.api-ninjas.com/v1/nutrition?query=${formData.foodQuantity} ${formData.foodName}`, {
+        Axios.get(`https://api.calorieninjas.com/v1/nutrition?query=${formData.foodQuantity} ${formData.foodName}`, {
             headers: {
                 'X-Api-Key': API_KEY
             }
         }).then((res) => {
-            setCalories(res.data[0].calories);
-            setProtein(res.data[0].protein_g)
-            setCarbs(res.data[0].carbohydrates_total_g)
-            updateTable(res.data[0].calories, res.data[0].protein_g, res.data[0].carbohydrates_total_g)
+            console.log(res)
+            setCalories(res.data.items[0].calories);
+            setProtein(res.data.items[0].protein_g)
+            setCarbs(res.data.items[0].carbohydrates_total_g)
+            updateTable(res.data.items[0].calories,res.data.items[0].protein_g , res.data.items[0].carbohydrates_total_g)
         }).catch((error) => {
             console.log(error);
         })
@@ -92,5 +93,5 @@ const Tracker = () => {
     )
 }
 
-export default Tracker;
+export default NutritionTracker;
 
