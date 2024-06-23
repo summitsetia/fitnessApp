@@ -16,3 +16,9 @@ const excerciseData = [
         excercise: "Hack Squat",
     }
 ]
+
+export default excerciseData;
+
+
+
+

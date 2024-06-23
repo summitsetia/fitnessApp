@@ -62,7 +62,7 @@ const Dashboard = () => {
                     <p>{totalCarbs} g</p>
                 </div>
                 <div className='border-2 border-solid h-48 w-96 bg-white flex flex-col items-center rounded-md'>
-                    <h1 className='font-bold'></h1>
+                    <h1 className='font-bold'> Workouts Per Week </h1>
                     <p>{fetchError}</p>
                 </div>
                 <div className='border-2 border-solid h-48 w-96 bg-white flex flex-col items-center rounded-md'>

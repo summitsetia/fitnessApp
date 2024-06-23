@@ -1,25 +1,25 @@
 'use client'
 import React, { useState } from "react";
 import { createClient } from '../../utils/supabase/client';
-import excerciseData from './excerciseData'
+import excerciseData from './excerciseData';
 
 const WorkoutTracker = () => {
     const supabase = createClient();
-    const [formData, setFormData] = useState({ weight: "", reps: "" });
-    const [submittedData, setSubmittedData] = useState({ weight: 0, reps: 0 });
-    const [showDropdown, setShowDropdown] = useState(false)
-
-    const updateTable = async ( userData ) => {
-        const {data, error} = await supabase
-        .from("workouts")
-        .insert({weight: userData.weight, reps: userData.reps})
+    const [formData, setFormData] = useState({ weight: "", reps: "", excercise: "", sets: "" });
+    const [submittedData, setSubmittedData] = useState({ weight: 0, reps: 0, excercise: "", sets: 0 });
+    const [showDropdown, setShowDropdown] = useState(false);
+    
+    const updateTable = async (userData) => {
+        const { data, error } = await supabase
+            .from("workouts")
+            .insert({ excercise: userData.excercise, sets: userData.sets, weight: userData.weight, reps: userData.reps });
 
         if (error) {
-            console.log(error)
+            console.log(error);
         }
 
         if (data) {
-            console.log(data)
+            console.log(data);
         }
     }
 
@@ -34,13 +34,38 @@ const WorkoutTracker = () => {
     const handleSubmit = (event) => {
         event.preventDefault();
         setSubmittedData(formData);
-        updateTable(submittedData)
+        updateTable(formData);
     };
-    
+
+    const handleExerciseClick = (excercise) => {
+        setFormData(prevValue => ({
+            ...prevValue,
+            excercise: excercise
+        }));
+        setShowDropdown(false);
+    };
 
     return (
         <div className="py-64">
             <form onSubmit={handleSubmit}>
+                <input
+                    type="text"
+                    placeholder="excercise"
+                    onChange={handleChange}
+                    name="excercise"
+                    value={formData.excercise}
+                    className='border'
+                    onFocus={() => setShowDropdown(true)}
+                    onBlur={() => setShowDropdown(false)}
+                />
+                <input
+                    type="text"
+                    placeholder="sets"
+                    onChange={handleChange}
+                    name="sets"
+                    value={formData.sets}
+                    className='border'
+                />
                 <input
                     type="text"
                     placeholder="weight"
@@ -48,8 +73,6 @@ const WorkoutTracker = () => {
                     name="weight"
                     value={formData.weight}
                     className='border'
-                    onFocus={() => setShowDropdown(true)}
-                    onBlur={() => setShowDropdown(false)}
                 />
                 <input
                     type="text"
@@ -61,28 +84,25 @@ const WorkoutTracker = () => {
                 />
                 <button type="submit" className='border'>Submit</button>
             </form>
+            {submittedData.excercise.length > 0 ? <h1 className="border">{submittedData.excercise} </h1> : <h1></h1>}
+            {submittedData.sets > 0 ? <h1 className="border">{submittedData.sets} </h1> : <h1></h1>}
             {submittedData.weight > 0 ? <h1 className="border">{submittedData.weight} kg</h1> : <h1></h1>}
-            {submittedData.reps > 0 ? <h1 className="border">{submittedData.reps}</h1> : <h1></h1>}
-            <DropDown showDropdown={showDropdown}/>
+            {submittedData.reps > 0 ? <h1 className="border ">{submittedData.reps}</h1> : <h1></h1>}
+            {showDropdown && (
+                <DropDown handleExerciseClick={handleExerciseClick}/>
+            )}
         </div>
     );
 };
 
-const DropDown = ({ showDropdown }) => {
+const DropDown = ({ handleExerciseClick }) => {
     return (
         <div>
-            {excerciseData.map((exercise) => {
-                return (
-                    showDropdown && (
-                        <div>
-                            <h1>{exercise.exercise}</h1>
-                        </div>
-                    )
-                );
-            })}
+            {excerciseData.map((item) => (
+                <h1 key={item.id} onMouseDown={() => handleExerciseClick(item.excercise)}>{item.excercise}</h1>
+            ))}
         </div>
     );
 };
-
 
 export default WorkoutTracker;
