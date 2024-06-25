@@ -1,13 +1,15 @@
 'use client'
 import React, { useState } from "react";
 import { createClient } from '../../utils/supabase/client';
-import excerciseData from './excerciseData';
+import exerciseData from './exerciseData';
 
 const WorkoutTracker = () => {
     const supabase = createClient();
+    const initialFormData = { weight: "", reps: "", exercise: "", sets: "" };
     const [formData, setFormData] = useState({ weight: "", reps: "", excercise: "", sets: "" });
     const [submittedData, setSubmittedData] = useState({ weight: 0, reps: 0, excercise: "", sets: 0 });
     const [showDropdown, setShowDropdown] = useState(false);
+    const [showForm, setShowForm] = useState(false)
     
     const updateTable = async (userData) => {
         const { data, error } = await supabase
@@ -35,6 +37,8 @@ const WorkoutTracker = () => {
         event.preventDefault();
         setSubmittedData(formData);
         updateTable(formData);
+        setFormData(initialFormData); // Reset form data after submission
+        setShowDropdown(false); // Hid
     };
 
     const handleExerciseClick = (excercise) => {
@@ -45,52 +49,62 @@ const WorkoutTracker = () => {
         setShowDropdown(false);
     };
 
+    const handleFormClick = () => {
+        setShowForm(prevValue => !prevValue)
+    }
+
     return (
         <div className="py-64">
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="text"
-                    placeholder="excercise"
-                    onChange={handleChange}
-                    name="excercise"
-                    value={formData.excercise}
-                    className='border'
-                    onFocus={() => setShowDropdown(true)}
-                    onBlur={() => setShowDropdown(false)}
-                />
-                <input
-                    type="text"
-                    placeholder="sets"
-                    onChange={handleChange}
-                    name="sets"
-                    value={formData.sets}
-                    className='border'
-                />
-                <input
-                    type="text"
-                    placeholder="weight"
-                    onChange={handleChange}
-                    name="weight"
-                    value={formData.weight}
-                    className='border'
-                />
-                <input
-                    type="text"
-                    placeholder="reps"
-                    onChange={handleChange}
-                    name="reps"
-                    value={formData.reps}
-                    className="border"
-                />
-                <button type="submit" className='border'>Submit</button>
-            </form>
-            {submittedData.excercise.length > 0 ? <h1 className="border">{submittedData.excercise} </h1> : <h1></h1>}
-            {submittedData.sets > 0 ? <h1 className="border">{submittedData.sets} </h1> : <h1></h1>}
-            {submittedData.weight > 0 ? <h1 className="border">{submittedData.weight} kg</h1> : <h1></h1>}
-            {submittedData.reps > 0 ? <h1 className="border ">{submittedData.reps}</h1> : <h1></h1>}
-            {showDropdown && (
-                <DropDown handleExerciseClick={handleExerciseClick}/>
-            )}
+            <button onClick={handleFormClick}>Start An Empty Workout</button>
+            <div>
+                { showForm && (<form onSubmit={handleSubmit}>
+                    <input
+                        type="text"
+                        placeholder="excercise"
+                        onChange={handleChange}
+                        name="excercise"
+                        value={formData.excercise}
+                        className='border'
+                        onFocus={() => setShowDropdown(true)}
+                        onBlur={() => setShowDropdown(false)}
+                    />
+                    <input
+                        type="text"
+                        placeholder="sets"
+                        onChange={handleChange}
+                        name="sets"
+                        value={formData.sets}
+                        className='border'
+                    />
+                    <input
+                        type="text"
+                        placeholder="weight"
+                        onChange={handleChange}
+                        name="weight"
+                        value={formData.weight}
+                        className='border'
+                    />
+                    <input
+                        type="text"
+                        placeholder="reps"
+                        onChange={handleChange}
+                        name="reps"
+                        value={formData.reps}
+                        className="border"
+                    />
+                    <button type="submit" className='border'>Submit</button>
+                </form>
+                )}
+                {submittedData.excercise.length > 0 ? <h1 className="border">{submittedData.excercise} </h1> : <h1></h1>}
+                {submittedData.sets > 0 ? <h1 className="border">{submittedData.sets} </h1> : <h1></h1>}
+                {submittedData.weight > 0 ? <h1 className="border">{submittedData.weight} kg</h1> : <h1></h1>}
+                {submittedData.reps > 0 ? <h1 className="border ">{submittedData.reps}</h1> : <h1></h1>}
+                <div>
+                    {showDropdown && (
+                        <DropDown handleExerciseClick={handleExerciseClick}/>
+                    )}
+                </div> 
+            </div>
         </div>
     );
 };
@@ -98,7 +112,7 @@ const WorkoutTracker = () => {
 const DropDown = ({ handleExerciseClick }) => {
     return (
         <div>
-            {excerciseData.map((item) => (
+            {exerciseData.map((item) => (
                 <h1 key={item.id} onMouseDown={() => handleExerciseClick(item.excercise)}>{item.excercise}</h1>
             ))}
         </div>

@@ -1,4 +1,4 @@
-const excerciseData = [
+const exerciseData = [
     {
         id: 1,
         excercise: "Bench Press",
@@ -17,7 +17,7 @@ const excerciseData = [
     }
 ]
 
-export default excerciseData;
+export default exerciseData;
 
 
 
