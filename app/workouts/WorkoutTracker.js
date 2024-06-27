@@ -37,8 +37,8 @@ const WorkoutTracker = () => {
         event.preventDefault();
         setSubmittedData(formData);
         updateTable(formData);
-        setFormData(initialFormData); // Reset form data after submission
-        setShowDropdown(false); // Hid
+        setFormData(initialFormData); 
+        setShowDropdown(false); 
     };
 
     const handleExerciseClick = (excercise) => {
