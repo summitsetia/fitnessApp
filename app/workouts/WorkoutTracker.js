@@ -10,10 +10,11 @@ const WorkoutTracker = () => {
     const [submittedData, setSubmittedData] = useState({ weight: 0, reps: 0, excercise: "", sets: 0 });
     const [showDropdown, setShowDropdown] = useState(false);
     const [showForm, setShowForm] = useState(false)
+    const [showSets, setShowSets] = useState(false)
     
     const updateTable = async (userData) => {
         const { data, error } = await supabase
-            .from("workouts")
+            .from('workouts')
             .insert({ excercise: userData.excercise, sets: userData.sets, weight: userData.weight, reps: userData.reps });
 
         if (error) {
