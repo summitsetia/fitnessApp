@@ -1,11 +1,11 @@
 import React from 'react';
-import Navigation from './components/Navigation';
+import Navbar from './components/Navbar';
 import Dashboard from './components/Dashboard';
 
 export default function Home () {
   return (
     <div className='bg-[#FBFBFF]'>
-      <Navigation />
+      <Navbar />
       <div className='flex justify-center'>
         <Dashboard />
       </div>

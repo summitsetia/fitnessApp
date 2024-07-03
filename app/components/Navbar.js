@@ -3,18 +3,18 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 
-const Navigation = () => {
+const Navbar = () => {
     return (
-        <div className='flex flex-col text-black '>
-            <nav className='flex fixed w-full z-10 px-12 py-12 border-b-2 border-solid bg-white items-center'>
-                <div className='flex items-center'>
-                    <Link href="/" className='fixed'>
+        <div className='sticky top-0 text-black '>
+            <nav className='flex w-full px-12 border-b-2 border-solid bg-white items-center h-'>
+                <div className='items-center py-4'>
+                    <Link href="/" className=''>
                         <Image
                             src="/images/logo.png"
                             alt="Logo"
-                            width={180}
-                            height={150}
-                            
+                            width={75}
+                            height={75}
+
                         />
                     </Link>
                 </div>
@@ -27,4 +27,4 @@ const Navigation = () => {
     );
 };
 
-export default Navigation;
+export default Navbar;

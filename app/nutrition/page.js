@@ -1,11 +1,11 @@
 import React from 'react';
-import Navigation from '../components/Navigation';
+import Navbar from '../components/Navbar';
 import NutritionTracker from './NutritionTracker';
 
-export default function Home () {
+export default function Home() {
     return (
         <div>
-            <Navigation />
+            <Navbar />
             <div className='flex justify-center'>
                 <NutritionTracker />
             </div>
