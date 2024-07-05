@@ -1,27 +1,64 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import exerciseData from './exerciseData';
+import { createClient } from '../../utils/supabase/client';
 
 const WorkoutTracker2 = () => {
     const [showAddDropdown, setShowAddDropdown] = useState(false);
     const [workoutLog, setWorkoutLog] = useState([]);
+    const supabase = createClient()
 
-    function addExercise(event) {
+    
+    useEffect (() => {
+        const fetchData = async () => {
+            const { data, error } = await supabase
+            .from('food_log')
+            .select()
+
+            if(error) {
+                console.log(error)
+            }
+            
+            if(data) {
+                console.log(data)
+
+
+
+            }
+        }
+
+        fetchData()
+
+    } , [])
+
+
+    async function addExercise (event) {
         const { value } = event.target;
-
-
         setWorkoutLog([...workoutLog, {
             id: workoutLog.length + 1,
             exerciseName: value,
             sets: [
                 {
                     sets: null,
-                    weight: null,
+                    weight: null
                 }
             ]
         }])
 
-        setShowAddDropdown(false)
+
+       const { data, error} = await supabase
+       .from('excercises')
+       .insert({ name: value, workouts_id})
+
+       if (error) {
+            console.log(error)
+    }
+
+        if (data) {
+            console.log(data)
+    }
+
+    setShowAddDropdown(false)
     }
 
     function handleChange(event, workoutId, setIndex) {
