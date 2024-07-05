@@ -16,8 +16,8 @@ const WorkoutTracker2 = () => {
             exerciseName: value,
             sets: [
                 {
-                    weight: 0,
-                    reps: 0
+                    sets: null,
+                    weight: null,
                 }
             ]
         }])
@@ -25,14 +25,20 @@ const WorkoutTracker2 = () => {
         setShowAddDropdown(false)
     }
 
-    // function onChange() {
-    //     const { value } = event.target;
+    function handleChange(event, workoutId, setIndex) {
+        const { name, value } = event.target;
 
-    //     setWorkoutLog([...workoutLog, {
-
-    //     }])
-
-    // }
+        setWorkoutLog(prevValue => prevValue.map(workout =>
+            workout.id === workoutId
+                ? {
+                    ...workout,
+                    sets: workout.sets.map((set, index) =>
+                        index === setIndex ? { ...set, [name]: value, [name]: value } : set
+                    )
+                }
+                : workout
+        ));
+    }
 
     function handleAddSet(exerciseId) {
         console.log(exerciseId);
@@ -55,7 +61,25 @@ const WorkoutTracker2 = () => {
                     <div key={index} className='py-5'>
                         <p>Exercise: {workout.exerciseName}</p>
                         {workout.sets.map((set, setIndex) => (
-                            <p key={setIndex}>Set {setIndex + 1}: Weight: {set.weight}, Reps: {set.reps}</p>
+                            <>
+                                <p key={setIndex}>Set {setIndex + 1}</p>
+                                <form>
+                                    <input
+                                        type="text"
+                                        placeholder="weight"
+                                        onChange={(event) => handleChange(event, workout.id, setIndex)}
+                                        name="weight"
+                                        value={set.weight}
+                                    />
+                                    <input
+                                        type="text"
+                                        placeholder="reps"
+                                        onChange={(event) => handleChange(event, workout.id, setIndex)}
+                                        name="reps"
+                                        value={set.reps}
+                                    />
+                                </form>
+                            </>
                         ))}
                         <button onClick={() => handleAddSet(workout.id)}>Add Set</button>
                     </div>
@@ -71,7 +95,7 @@ const WorkoutTracker2 = () => {
                     </select>
                 </>
             ) : (<button onClick={() => setShowAddDropdown(true)}>
-                Add Exercsise
+                Add Exercise
             </button>)}
 
 
