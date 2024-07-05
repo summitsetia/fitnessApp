@@ -2,7 +2,6 @@
 import React, { useState } from 'react'
 import exerciseData from './exerciseData';
 
-
 const WorkoutTracker2 = () => {
     const [showAddDropdown, setShowAddDropdown] = useState(false);
     const [workoutLog, setWorkoutLog] = useState([]);
@@ -33,21 +32,21 @@ const WorkoutTracker2 = () => {
                 ? {
                     ...workout,
                     sets: workout.sets.map((set, index) =>
-                        index === setIndex ? { ...set, [name]: value, [name]: value } : set
+                        index === setIndex ? { ...set, [name]: value } : set
                     )
                 }
                 : workout
         ));
     }
 
-    function handleAddSet(exerciseId) {
-        console.log(exerciseId);
+    function handleAddSet(workoutId) {
+        console.log(workoutId);
         setWorkoutLog(prevWorkoutLog =>
             prevWorkoutLog.map((workout) =>
-                workout.id === exerciseId
+                workout.id === workoutId
                     ? {
                         ...workout,
-                        sets: [...workout.sets, { weight: 0, reps: 0 }]
+                        sets: [...workout.sets, { weight: null, reps: null }]
                     }
                     : workout
             )
