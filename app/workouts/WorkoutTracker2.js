@@ -1,143 +1,130 @@
-'use client'
-import React, { useEffect, useState } from 'react'
-import exerciseData from './exerciseData';
-import { createClient } from '../../utils/supabase/client';
+"use client";
+import React, { useState } from "react";
+import exerciseData from "./exerciseData";
+import { createClient } from "../../utils/supabase/client";
 
 const WorkoutTracker2 = () => {
-    const [showAddDropdown, setShowAddDropdown] = useState(false);
-    const [workoutLog, setWorkoutLog] = useState([]);
-    const supabase = createClient()
+  const [showAddDropdown, setShowAddDropdown] = useState(false);
+  const [workoutLog, setWorkoutLog] = useState([]);
+  const supabase = createClient();
 
-    
-    useEffect (() => {
-        const fetchData = async () => {
-            const { data, error } = await supabase
-            .from('food_log')
-            .select()
+  async function addExercise(event) {
+    const { value } = event.target;
+    setWorkoutLog([
+      ...workoutLog,
+      {
+        id: workoutLog.length + 1,
+        exerciseName: value,
+        sets: [
+          {
+            sets: null,
+            weight: null,
+          },
+        ],
+      },
+    ]);
 
-            if(error) {
-                console.log(error)
+    const { data, error } = await supabase
+      .from("excercises")
+      .insert({ name: value });
+
+    if (error) {
+      console.log(error);
+    }
+
+    if (data) {
+      console.log(data);
+    }
+
+    setShowAddDropdown(false);
+  }
+
+  function handleChange(event, workoutId, setIndex) {
+    const { name, value } = event.target;
+
+    setWorkoutLog((prevValue) =>
+      prevValue.map((workout) =>
+        workout.id === workoutId
+          ? {
+              ...workout,
+              sets: workout.sets.map((set, index) =>
+                index === setIndex ? { ...set, [name]: value } : set
+              ),
             }
-            
-            if(data) {
-                console.log(data)
+          : workout
+      )
+    );
+  }
 
-
-
+  function handleAddSet(workoutId) {
+    console.log(workoutId);
+    setWorkoutLog((prevWorkoutLog) =>
+      prevWorkoutLog.map((workout) =>
+        workout.id === workoutId
+          ? {
+              ...workout,
+              sets: [...workout.sets, { weight: null, reps: null }],
             }
-        }
+          : workout
+      )
+    );
+  }
 
-        fetchData()
-
-    } , [])
-
-
-    async function addExercise (event) {
-        const { value } = event.target;
-        setWorkoutLog([...workoutLog, {
-            id: workoutLog.length + 1,
-            exerciseName: value,
-            sets: [
-                {
-                    sets: null,
-                    weight: null
-                }
-            ]
-        }])
-
-
-       const { data, error} = await supabase
-       .from('excercises')
-       .insert({ name: value, workouts_id})
-
-       if (error) {
-            console.log(error)
-    }
-
-        if (data) {
-            console.log(data)
-    }
-
-    setShowAddDropdown(false)
-    }
-
-    function handleChange(event, workoutId, setIndex) {
-        const { name, value } = event.target;
-
-        setWorkoutLog(prevValue => prevValue.map(workout =>
-            workout.id === workoutId
-                ? {
-                    ...workout,
-                    sets: workout.sets.map((set, index) =>
-                        index === setIndex ? { ...set, [name]: value } : set
-                    )
-                }
-                : workout
-        ));
-    }
-
-    function handleAddSet(workoutId) {
-        console.log(workoutId);
-        setWorkoutLog(prevWorkoutLog =>
-            prevWorkoutLog.map((workout) =>
-                workout.id === workoutId
-                    ? {
-                        ...workout,
-                        sets: [...workout.sets, { weight: null, reps: null }]
+  return (
+    <div className="p-5 ">
+      {workoutLog.length > 0 &&
+        workoutLog.map((workout, index) => (
+          <div key={index} className="py-5">
+            <p>Exercise: {workout.exerciseName}</p>
+            {workout.sets.map((set, setIndex) => (
+              <>
+                <p key={setIndex}>Set {setIndex + 1}</p>
+                <form>
+                  <input
+                    type="text"
+                    placeholder="weight"
+                    onChange={(event) =>
+                      handleChange(event, workout.id, setIndex)
                     }
-                    : workout
-            )
-        );
-    }
+                    name="weight"
+                    value={set.weight}
+                  />
+                  <input
+                    type="text"
+                    placeholder="reps"
+                    onChange={(event) =>
+                      handleChange(event, workout.id, setIndex)
+                    }
+                    name="reps"
+                    value={set.reps}
+                  />
+                </form>
+              </>
+            ))}
+            <button onClick={() => handleAddSet(workout.id)}>Add Set</button>
+          </div>
+        ))}
+      {showAddDropdown ? (
+        <>
+          <label htmlFor="exercise">Choose a exercise: </label>
+          <select
+            name="exercise"
+            id="exercise"
+            form="exerciseform"
+            onChange={addExercise}
+          >
+            {exerciseData.map((item) => (
+              <option key={item.id} value={item.excercise}>
+                {item.excercise}
+              </option>
+            ))}
+          </select>
+        </>
+      ) : (
+        <button onClick={() => setShowAddDropdown(true)}>Add Exercise</button>
+      )}
+    </div>
+  );
+};
 
-    return (
-        <div className='p-5 '>
-            {workoutLog.length > 0 && (
-                workoutLog.map((workout, index) => (
-                    <div key={index} className='py-5'>
-                        <p>Exercise: {workout.exerciseName}</p>
-                        {workout.sets.map((set, setIndex) => (
-                            <>
-                                <p key={setIndex}>Set {setIndex + 1}</p>
-                                <form>
-                                    <input
-                                        type="text"
-                                        placeholder="weight"
-                                        onChange={(event) => handleChange(event, workout.id, setIndex)}
-                                        name="weight"
-                                        value={set.weight}
-                                    />
-                                    <input
-                                        type="text"
-                                        placeholder="reps"
-                                        onChange={(event) => handleChange(event, workout.id, setIndex)}
-                                        name="reps"
-                                        value={set.reps}
-                                    />
-                                </form>
-                            </>
-                        ))}
-                        <button onClick={() => handleAddSet(workout.id)}>Add Set</button>
-                    </div>
-                ))
-            )}
-            {showAddDropdown ? (
-                <>
-                    <label htmlFor="exercise">Choose a exercise: </label>
-                    <select name="exercise" id="exercise" form="exerciseform" onChange={addExercise}>
-                        {exerciseData.map((item) => (
-                            <option key={item.id} value={item.excercise}>{item.excercise}</option>
-                        ))}
-                    </select>
-                </>
-            ) : (<button onClick={() => setShowAddDropdown(true)}>
-                Add Exercise
-            </button>)}
-
-
-        </div>
-    )
-}
-
-export default WorkoutTracker2
-
+export default WorkoutTracker2;
