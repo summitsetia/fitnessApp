@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import WorkoutTracker2 from "./WorkoutTracker2";
-import { createClient } from "../../utils/supabase/client";
+import { createClient } from "@/utils/supabase/client";
 
 const NewWorkout = () => {
   const [workoutIds, setWorkoutIds] = useState([]);

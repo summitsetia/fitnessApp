@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import exerciseData from "./exerciseData";
-import { createClient } from "../../utils/supabase/client";
+import { createClient } from "@/utils/supabase/client";
 
 const WorkoutTracker2 = () => {
   const [showAddDropdown, setShowAddDropdown] = useState(false);
