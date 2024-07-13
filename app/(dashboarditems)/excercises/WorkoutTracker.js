@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import exerciseData from "./exerciseData";
 import { createClient } from "@/utils/supabase/client";
 
-const WorkoutTracker2 = () => {
+const WorkoutTracker = () => {
   const [showAddDropdown, setShowAddDropdown] = useState(false);
   const [workoutLog, setWorkoutLog] = useState([]);
   const supabase = createClient();
@@ -33,6 +33,7 @@ const WorkoutTracker2 = () => {
     }
 
     if (data) {
+      a;
       console.log(data);
     }
 
@@ -127,4 +128,4 @@ const WorkoutTracker2 = () => {
   );
 };
 
-export default WorkoutTracker2;
+export default WorkoutTracker;
