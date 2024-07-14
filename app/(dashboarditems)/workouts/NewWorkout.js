@@ -57,10 +57,20 @@ import { createClient } from "@/utils/supabase/client";
 export const NewWorkout = () => {
   const supabase = createClient();
   const addWorkout = async () => {
-    const { data, error } = await supabase.from("workouts").insert({});
-
+    const { data, error } = await supabase.auth.getUser();
     if (data) {
       console.log(data);
+      const { data: workoutData, error: workoutError } = await supabase
+        .from("workouts")
+        .insert({ users_id: data.user.id });
+
+      if (workoutData) {
+        console.log(workoutData);
+      }
+
+      if (workoutError) {
+        console.log(workoutError);
+      }
     }
 
     if (error) {

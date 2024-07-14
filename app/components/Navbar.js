@@ -33,9 +33,7 @@ const Navbar = () => {
           <div className="">
             <DropdownMenu>
               <DropdownMenuTrigger>
-                <Button variant="ghost" size="icon">
-                  <User className="h-6 w-6" />
-                </Button>
+                <User className="h-6 w-6" />
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>

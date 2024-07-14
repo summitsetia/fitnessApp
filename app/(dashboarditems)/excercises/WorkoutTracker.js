@@ -1,12 +1,29 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import exerciseData from "./exerciseData";
 import { createClient } from "@/utils/supabase/client";
+import { Button } from "@/components/ui/button";
 
 const WorkoutTracker = () => {
   const [showAddDropdown, setShowAddDropdown] = useState(false);
   const [workoutLog, setWorkoutLog] = useState([]);
   const supabase = createClient();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data, error } = await supabase.from("workouts").select();
+
+      if (data) {
+        console.log(data);
+      }
+
+      if (error) {
+        console.log(error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   async function addExercise(event) {
     const { value } = event.target;
@@ -33,7 +50,6 @@ const WorkoutTracker = () => {
     }
 
     if (data) {
-      a;
       console.log(data);
     }
 
@@ -124,6 +140,7 @@ const WorkoutTracker = () => {
       ) : (
         <button onClick={() => setShowAddDropdown(true)}>Add Exercise</button>
       )}
+      <Button variant="ghost"></Button>
     </div>
   );
 };
