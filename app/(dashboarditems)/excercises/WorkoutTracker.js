@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import exerciseData from "./exerciseData";
 import { createClient } from "@/utils/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -9,21 +9,27 @@ const WorkoutTracker = () => {
   const [workoutLog, setWorkoutLog] = useState([]);
   const supabase = createClient();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const { data, error } = await supabase.from("workouts").select();
+  const submitData = async () => {
+    const { data, error } = await supabase.auth.getUser();
+    if (data) {
+      console.log(data);
+      const { data: workoutData, error: workoutError } = await supabase
+        .from("workouts")
+        .insert({ users_id: data.user.id });
 
-      if (data) {
-        console.log(data);
+      if (workoutData) {
+        console.log(workoutData);
       }
 
-      if (error) {
-        console.log(error);
+      if (workoutError) {
+        console.log(workoutError);
       }
-    };
+    }
 
-    fetchData();
-  }, []);
+    if (error) {
+      console.log(error);
+    }
+  }
 
   async function addExercise(event) {
     const { value } = event.target;
@@ -41,17 +47,6 @@ const WorkoutTracker = () => {
       },
     ]);
 
-    const { data, error } = await supabase
-      .from("excercises")
-      .insert({ name: value });
-
-    if (error) {
-      console.log(error);
-    }
-
-    if (data) {
-      console.log(data);
-    }
 
     setShowAddDropdown(false);
   }
@@ -63,11 +58,11 @@ const WorkoutTracker = () => {
       prevValue.map((workout) =>
         workout.id === workoutId
           ? {
-              ...workout,
-              sets: workout.sets.map((set, index) =>
-                index === setIndex ? { ...set, [name]: value } : set
-              ),
-            }
+            ...workout,
+            sets: workout.sets.map((set, index) =>
+              index === setIndex ? { ...set, [name]: value } : set
+            ),
+          }
           : workout
       )
     );
@@ -79,9 +74,9 @@ const WorkoutTracker = () => {
       prevWorkoutLog.map((workout) =>
         workout.id === workoutId
           ? {
-              ...workout,
-              sets: [...workout.sets, { weight: null, reps: null }],
-            }
+            ...workout,
+            sets: [...workout.sets, { weight: null, reps: null }],
+          }
           : workout
       )
     );
@@ -98,7 +93,7 @@ const WorkoutTracker = () => {
                 <p key={setIndex}>Set {setIndex + 1}</p>
                 <form>
                   <input
-                    type="text"
+                    type="number"
                     placeholder="weight"
                     onChange={(event) =>
                       handleChange(event, workout.id, setIndex)
@@ -107,7 +102,7 @@ const WorkoutTracker = () => {
                     value={set.weight}
                   />
                   <input
-                    type="text"
+                    type="number"
                     placeholder="reps"
                     onChange={(event) =>
                       handleChange(event, workout.id, setIndex)
@@ -140,7 +135,7 @@ const WorkoutTracker = () => {
       ) : (
         <button onClick={() => setShowAddDropdown(true)}>Add Exercise</button>
       )}
-      <Button variant="ghost"></Button>
+      {workoutLog.length > 0 && <Button variant="ghost" onClick={submitData}>Finish Workout</Button>}
     </div>
   );
 };

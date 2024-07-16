@@ -49,38 +49,14 @@
 
 // export default NewWorkout;
 
-"use client";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { createClient } from "@/utils/supabase/client";
 
 export const NewWorkout = () => {
-  const supabase = createClient();
-  const addWorkout = async () => {
-    const { data, error } = await supabase.auth.getUser();
-    if (data) {
-      console.log(data);
-      const { data: workoutData, error: workoutError } = await supabase
-        .from("workouts")
-        .insert({ users_id: data.user.id });
-
-      if (workoutData) {
-        console.log(workoutData);
-      }
-
-      if (workoutError) {
-        console.log(workoutError);
-      }
-    }
-
-    if (error) {
-      console.log(error);
-    }
-  };
   return (
     <div>
       <Link href="/excercises" className="">
-        <Button variant="ghost" onClick={addWorkout}>
+        <Button variant="ghost" >
           Create Workout
         </Button>
       </Link>
