@@ -16,25 +16,47 @@ const WorkoutTracker = () => {
       console.log(data);
       const { data: workoutData, error: workoutError } = await supabase
         .from("workouts")
-        .insert({ users_id: data.user.id });
-
+        .insert({ users_id: data.user.id })
+        .select("*");
       if (workoutData) {
+        console.log(workoutData);
         const { data: excerciseData, error: excerciseError } = await supabase
           .from("excercises")
           .insert(
             workoutLog.map((excercise) => ({
-              excercise_id: workoutData.user.id,
-              name: excercise.excerciseName,
+              workouts_id: workoutData[0].id,
+              name: excercise.exerciseName,
             }))
-          );
+          )
+          .select("*");
         if (excerciseData) {
           console.log(excerciseData);
+          const { data: setsData, error: setsError } = await supabase
+            .from("sets")
+            .insert(
+              workoutLog.flatMap((excercise, index) =>
+                excercise.sets.map((set) => ({
+                  excercise_id: excerciseData[index].id,
+                  weight: set.weight,
+                  reps: set.reps,
+                }))
+              )
+            )
+
+            .select("*");
+
+          if (setsData) {
+            console.log(setsData);
+          }
+
+          if (setsError) {
+            console.log(setsError);
+          }
         }
 
         if (excerciseError) {
           console.log(excerciseError);
         }
-        console.log(workoutData);
       }
 
       if (workoutError) {
@@ -56,8 +78,8 @@ const WorkoutTracker = () => {
         exerciseName: value,
         sets: [
           {
-            sets: null,
             weight: null,
+            reps: null,
           },
         ],
       },
@@ -100,7 +122,7 @@ const WorkoutTracker = () => {
   return (
     <div className="p-5 ">
       {workoutLog.length > 0 &&
-        workoutLog.map((workout, index) => (
+        workoutLog.flatMap((workout, index) => (
           <div key={index} className="py-5">
             <p>Exercise: {workout.exerciseName}</p>
             {workout.sets.map((set, setIndex) => (
