@@ -2,7 +2,7 @@ import WorkoutTracker from "./WorkoutTracker";
 
 export const page = () => {
   return (
-    <div>
+    <div className="mx-8 my-8">
       <WorkoutTracker />
     </div>
   );
