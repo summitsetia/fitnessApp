@@ -175,8 +175,10 @@ const WorkoutHistory = () => {
 
   return (
     <div>
-      <h1>History</h1>
-      <div>
+      <div className="flex justify-center pb-4">
+        <h1>History</h1>
+      </div>
+      <div className="flex space-x-8">
         {workoutData.map((workout) => (
           <HistoryElement
             key={workout.id}
