@@ -130,6 +130,7 @@ const WorkoutHistory = () => {
   const [workoutData, setWorkoutData] = useState([]);
   const [excerciseData, setExcerciseData] = useState([]);
   const [setData, setSetData] = useState([]);
+  const formattedDate = new Date(workoutData.created_at).toDateString();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -182,7 +183,7 @@ const WorkoutHistory = () => {
         {workoutData.map((workout) => (
           <HistoryElement
             key={workout.id}
-            workoutDate={workout.created_at}
+            workoutDate={formattedDate}
             excerciseData={excerciseData}
             workoutId={workout.id}
             workoutName={workout.workout_name}
