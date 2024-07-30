@@ -98,11 +98,11 @@ const WorkoutTracker = () => {
       prevValue.map((workout) =>
         workout.id === workoutId
           ? {
-              ...workout,
-              sets: workout.sets.map((set, index) =>
-                index === setIndex ? { ...set, [name]: value } : set
-              ),
-            }
+            ...workout,
+            sets: workout.sets.map((set, index) =>
+              index === setIndex ? { ...set, [name]: value } : set
+            ),
+          }
           : workout
       )
     );
@@ -114,9 +114,9 @@ const WorkoutTracker = () => {
       prevWorkoutLog.map((workout) =>
         workout.id === workoutId
           ? {
-              ...workout,
-              sets: [...workout.sets, { weight: null, reps: null }],
-            }
+            ...workout,
+            sets: [...workout.sets, { weight: null, reps: null }],
+          }
           : workout
       )
     );
@@ -137,7 +137,7 @@ const WorkoutTracker = () => {
           <form className="pb-4">
             <input
               type="text"
-              placeholder="Excercise Name"
+              placeholder="Workout Name"
               name="name"
               value={excerciseName.name}
               onChange={handleNameChange}
