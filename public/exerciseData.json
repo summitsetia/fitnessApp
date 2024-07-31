@@ -1,0 +1,18 @@
+[
+    {
+        "id": 1,
+        "exercise": "Bench Press"
+    },
+    {
+        "id": 2,
+        "exercise": "Incline Dumbbell Press"
+    },
+    {
+        "id": 3,
+        "exercise": "Flat Dumbbell Press"
+    },
+    {
+        "id": 4,
+        "exercise": "Hack Squat"
+    }
+]

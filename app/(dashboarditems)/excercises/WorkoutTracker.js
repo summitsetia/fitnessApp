@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import exerciseData from "./exerciseData";
+import exerciseData from "@/public/exerciseData.json";
 import { createClient } from "@/utils/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
@@ -10,7 +10,10 @@ const WorkoutTracker = () => {
   const [showAddDropdown, setShowAddDropdown] = useState(false);
   const [workoutLog, setWorkoutLog] = useState([]);
   const [excerciseName, setExcerciseName] = useState({ name: "" });
+  const [selectedExercise, setSelectedExercise] = useState("");
   const supabase = createClient();
+  // const parsedExcerciseData = JSON.parse(exerciseData)
+
 
   const submitData = async () => {
     const { data, error } = await supabase.auth.getUser();
@@ -72,23 +75,24 @@ const WorkoutTracker = () => {
     }
   };
 
-  async function addExercise(event) {
+  function addExercise(event) {
     const { value } = event.target;
-    setWorkoutLog([
-      ...workoutLog,
-      {
-        id: workoutLog.length + 1,
-        exerciseName: value,
-        sets: [
-          {
-            weight: null,
-            reps: null,
-          },
-        ],
-      },
-    ]);
-
-    setShowAddDropdown(false);
+    if (value !== "default") {
+      setWorkoutLog([
+        ...workoutLog,
+        {
+          id: workoutLog.length + 1,
+          exerciseName: value,
+          sets: [
+            {
+              weight: null,
+              reps: null,
+            },
+          ],
+        },
+      ]);
+      setShowAddDropdown(false);
+    }
   }
 
   function handleChange(event, workoutId, setIndex) {
@@ -205,16 +209,18 @@ const WorkoutTracker = () => {
           ))}
         {showAddDropdown ? (
           <>
-            <label htmlFor="exercise">Choose a exercise: </label>
+            <label htmlFor="exercise">Choose an exercise: </label>
             <select
               name="exercise"
               id="exercise"
               form="exerciseform"
               onChange={addExercise}
+              value={selectedExercise}
             >
+              <option value="default">Choose an exercise</option>
               {exerciseData.map((item) => (
-                <option key={item.id} value={item.excercise}>
-                  {item.excercise}
+                <option key={item.id} value={item.exercise}>
+                  {item.exercise}
                 </option>
               ))}
             </select>
@@ -241,93 +247,3 @@ const WorkoutTracker = () => {
 
 export default WorkoutTracker;
 
-// return (
-//   <div className="max-w-3xl mx-auto p-6 bg-gray-100 rounded-lg shadow-md">
-//     <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">Workout Tracker</h1>
-
-//     {workoutLog.length > 0 &&
-//       workoutLog.map((workout, index) => (
-//         <div key={index} className="mb-8 bg-white p-6 rounded-md shadow-sm">
-//           <h2 className="text-xl font-semibold mb-4 text-gray-700">Exercise: {workout.exerciseName}</h2>
-//           {workout.sets.map((set, setIndex) => (
-//             <div key={setIndex} className="mb-4">
-//               <p className="font-medium text-gray-600 mb-2">Set {setIndex + 1}</p>
-//               <form className="flex space-x-4">
-//                 <input
-//                   type="number"
-//                   placeholder="Weight (kg)"
-//                   onChange={(event) => handleChange(event, workout.id, setIndex)}
-//                   name="weight"
-//                   value={set.weight}
-//                   className="flex-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-//                 />
-//                 <input
-//                   type="number"
-//                   placeholder="Reps"
-//                   onChange={(event) => handleChange(event, workout.id, setIndex)}
-//                   name="reps"
-//                   value={set.reps}
-//                   className="flex-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-//                 />
-//               </form>
-//             </div>
-//           ))}
-//           <Button
-//             onClick={() => handleAddSet(workout.id)}
-//             className="mt-2 bg-blue-500 text-white hover:bg-blue-600 transition duration-300"
-//           >
-//             Add Set
-//           </Button>
-//         </div>
-//       ))}
-
-//     {showAddDropdown ? (
-//       <div className="mb-6">
-//         <label htmlFor="exercise" className="block mb-2 font-medium text-gray-700">Choose an exercise: </label>
-//         <select
-//           name="exercise"
-//           id="exercise"
-//           form="exerciseform"
-//           onChange={addExercise}
-//           className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-//         >
-//           {exerciseData.map((item) => (
-//             <option key={item.id} value={item.excercise}>
-//               {item.excercise}
-//             </option>
-//           ))}
-//         </select>
-//       </div>
-//     ) : (
-//       <Button
-//         onClick={() => setShowAddDropdown(true)}
-//         className="w-full mb-6 bg-green-500 text-white hover:bg-green-600 transition duration-300"
-//       >
-//         Add Exercise
-//       </Button>
-//     )}
-
-//     {workoutLog.length > 0 && (
-//       <div className="flex justify-between">
-//         <Link href="/workouts" className="flex-1 mr-2">
-//           <Button
-//             variant="ghost"
-//             onClick={submitData}
-//             className="w-full bg-blue-500 text-white hover:bg-blue-600 transition duration-300"
-//           >
-//             Finish Workout
-//           </Button>
-//         </Link>
-//         <Button
-//           variant="ghost"
-//           className="flex-1 ml-2 bg-red-500 text-white hover:bg-red-600 transition duration-300"
-//         >
-//           Cancel Workout
-//         </Button>
-//       </div>
-//     )}
-//   </div>
-// );
-// };
-
-// export default WorkoutTracker;
