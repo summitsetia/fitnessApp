@@ -12,7 +12,6 @@ const WorkoutTracker = () => {
   const [excerciseName, setExcerciseName] = useState({ name: "" });
   const [selectedExercise, setSelectedExercise] = useState("");
   const supabase = createClient();
-  // const parsedExcerciseData = JSON.parse(exerciseData)
 
 
   const submitData = async () => {

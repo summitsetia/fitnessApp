@@ -5,7 +5,7 @@ import { createClient } from "../../../utils/supabase/client";
 
 const Dashboard = () => {
   const supabase = createClient();
-  const [fetchError, setFetchError] = useState(null);
+  const [numberOfWorkouts, setNumberOfWorkouts] = useState(0)
   const [totalCalories, setTotalCalories] = useState(0);
   const [totalProtein, setTotalProtein] = useState(0);
   const [totalCarbs, setTotalCarbs] = useState(0);
@@ -21,30 +21,58 @@ const Dashboard = () => {
 
       if (data) {
         console.log(data);
-        setFetchError(null);
 
         const calorieTotal = data.reduce(
           (accumulator, element) => accumulator + element.calories,
           0
         );
-        setTotalCalories(calorieTotal);
+        setTotalCalories(calorieTotal.toFixed(2));
 
         const proteinTotal = data.reduce(
           (accumulator, element) => accumulator + element.protein,
           0
         );
-        setTotalProtein(proteinTotal);
+        setTotalProtein(proteinTotal.toFixed(2));
 
         const carbsTotal = data.reduce(
           (accumulator, element) => accumulator + element.carbs,
           0
         );
-        setTotalCarbs(carbsTotal);
+        setTotalCarbs(carbsTotal.toFixed(2));
+
       }
+
     };
+
 
     fetchData();
   }, []);
+
+
+  useEffect(() => {
+    const fetchWorkoutData = async () => {
+      const { data: workoutData, error: workoutError } = await supabase
+        .from('workouts')
+        .select('*')
+
+      if (workoutData) {
+        const currentDate = new Date()
+        const oneWeekAgoDate = new Date()
+        oneWeekAgoDate.setDate(currentDate.getDate() - 7)
+        console.log(oneWeekAgoDate)
+
+        const filteredWorkoutsArray = workoutData.filter((workout) => new Date(workout.created_at) >= oneWeekAgoDate && new Date(workout.created_at) <= currentDate)
+        setNumberOfWorkouts(filteredWorkoutsArray.length)
+
+      }
+
+      if (workoutError) {
+        console.log(workoutError)
+      }
+
+    }
+    fetchWorkoutData()
+  }, [])
 
   return (
     <div className="py-36 ">
@@ -66,8 +94,8 @@ const Dashboard = () => {
           <p>{totalCarbs} g</p>
         </div>
         <div className="border-2 border-solid h-48 w-96 bg-white flex flex-col items-center rounded-md">
-          <h1 className="font-bold"> Workouts Per Week </h1>
-          <p>{fetchError}</p>
+          <h1 className="font-bold"> Workouts This Week </h1>
+          <p>{numberOfWorkouts}</p>
         </div>
         <div className="border-2 border-solid h-48 w-96 bg-white flex flex-col items-center rounded-md">
           <h1 className="font-bold"></h1>

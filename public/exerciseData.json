@@ -1,7 +1,7 @@
 [
     {
         "id": 1,
-        "exercise": "Bench Press"
+        "exercise": "Bench Press (Barbell)"
     },
     {
         "id": 2,
@@ -13,6 +13,22 @@
     },
     {
         "id": 4,
-        "exercise": "Hack Squat"
+        "exercise": "Cable Crossover"
+    },
+    {
+        "id": 5,
+        "exercise": "Pec Deck (Machine)"
+    },
+    {
+        "id": 6,
+        "exercise": "Bench Press (Cable)"
+    },
+    {
+        "id": 7,
+        "exercise": "Bench Press (Smith Machine)"
+    },
+    {
+        "id": 8,
+        "exercise": "Chest Fly (Dumbell)"
     }
 ]
