@@ -9,11 +9,12 @@ const NutritionTracker = () => {
   const [calories, setCalories] = useState(0);
   const [protein, setProtein] = useState(0);
   const [carbs, setCarbs] = useState(0);
+  const [totalFat, setTotalFat] = useState(0)
   const [fetchError, setFetchError] = useState(null);
   const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
   const [formData, setFormData] = useState({ foodQuantity: "", foodName: "" });
 
-  const updateTable = async (calories, protein, carbs) => {
+  const updateTable = async (calories, protein, carbs, totalFat) => {
     console.log("clicked");
     console.log("calories from updateTable", calories);
 
@@ -23,6 +24,7 @@ const NutritionTracker = () => {
         calories: calories,
         protein: protein,
         carbs: carbs,
+        total_fat: totalFat,
         foodQuantity: formData.foodQuantity,
         foodName: formData.foodName,
       });
@@ -62,10 +64,12 @@ const NutritionTracker = () => {
         setCalories(res.data.items[0].calories);
         setProtein(res.data.items[0].protein_g);
         setCarbs(res.data.items[0].carbohydrates_total_g);
+        setTotalFat(res.data.items[0].fat_total_g)
         updateTable(
           res.data.items[0].calories,
           res.data.items[0].protein_g,
-          res.data.items[0].carbohydrates_total_g
+          res.data.items[0].carbohydrates_total_g,
+          res.data.items[0].fat_total_g
         );
       })
       .catch((error) => {
@@ -75,7 +79,7 @@ const NutritionTracker = () => {
 
   return (
     <div>
-      <div className="pt-64 flex justify-center">
+      <div className="pt-48 flex justify-center">
         <form onSubmit={handleSubmit}>
           <input
             type="text"
@@ -101,6 +105,7 @@ const NutritionTracker = () => {
           {calories > 0 ? <h1>{calories} kcal</h1> : <h1></h1>}
           {protein > 0 ? <h1>{protein} g</h1> : <h1></h1>}
           {protein > 0 ? <h1>{carbs} g</h1> : <h1></h1>}
+          {totalFat > 0 ? <h1>{carbs} g</h1> : <h1></h1>}
         </div>
         <h1>{fetchError}</h1>
       </div>
