@@ -49,7 +49,8 @@ const NutritionTracker = () => {
   };
 
   const handleSubmit = (event) => {
-    event.preventDefault();
+    event.preventDefault()
+    // window.location.reload();
 
     Axios.get(
       `https://api.calorieninjas.com/v1/nutrition?query=${formData.foodQuantity} ${formData.foodName}`,

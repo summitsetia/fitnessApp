@@ -19,26 +19,31 @@ const NutritionStats = () => {
             }
 
             if (data) {
-                console.log(data)
-                const calorieTotal = data.reduce(
+                const currentDate = new Date().toDateString()
+                const filteredNutritionData = data.filter((entry) => new Date(entry.created_at).toDateString() === currentDate)
+                console.log(filteredNutritionData)
+                console.log(currentDate)
+                console.log(data.map((entry) => new Date(entry.created_at).toDateString()))
+
+                const calorieTotal = filteredNutritionData.reduce(
                     (accumulator, element) => accumulator + element.calories,
                     0
                 );
                 setTotalCalories(calorieTotal.toFixed(2));
 
-                const proteinTotal = data.reduce(
+                const proteinTotal = filteredNutritionData.reduce(
                     (accumulator, element) => accumulator + element.protein,
                     0
                 );
                 setTotalProtein(proteinTotal.toFixed(2));
 
-                const carbsTotal = data.reduce(
+                const carbsTotal = filteredNutritionData.reduce(
                     (accumulator, element) => accumulator + element.carbs,
                     0
                 );
                 setTotalCarbs(carbsTotal.toFixed(2));
 
-                const fatTotal = data.reduce(
+                const fatTotal = filteredNutritionData.reduce(
                     (accumulator, element) => accumulator + element.total_fat,
                     0
                 );
@@ -53,7 +58,7 @@ const NutritionStats = () => {
     return (
         <div className="flex flex-col items-center">
             <div className="mb-4">
-                <h1 className="font-bold text-2xl">Today Stats</h1>
+                <h1 className="font-bold text-2xl">Today's Stats</h1>
             </div>
             <div className="flex space-x-12">
                 <div className="text-center">
