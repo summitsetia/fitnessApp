@@ -21,20 +21,22 @@ const Dashboard = () => {
 
       if (data) {
         console.log(data);
+        const todaysDate = new Date().toDateString()
+        const filteredNutritionArray = data.filter((entry) => todaysDate === new Date(entry.date_created).toDateString())
 
-        const calorieTotal = data.reduce(
+        const calorieTotal = filteredNutritionArray.reduce(
           (accumulator, element) => accumulator + element.calories,
           0
         );
         setTotalCalories(calorieTotal.toFixed(2));
 
-        const proteinTotal = data.reduce(
+        const proteinTotal = filteredNutritionArray.reduce(
           (accumulator, element) => accumulator + element.protein,
           0
         );
         setTotalProtein(proteinTotal.toFixed(2));
 
-        const carbsTotal = data.reduce(
+        const carbsTotal = filteredNutritionArray.reduce(
           (accumulator, element) => accumulator + element.carbs,
           0
         );
@@ -83,7 +85,7 @@ const Dashboard = () => {
       </div>
       <div className="grid grid-cols-3 gap-4">
         <div className="border-2 border-solid h-32 w-96 bg-white flex flex-col items-center rounded-md">
-          <h1 className="font-bold">Calories Consumed</h1>
+          <h1 className="font-bold">Calories Consumed </h1>
           <h1> {totalCalories} kcal</h1>
           <p></p>
         </div>

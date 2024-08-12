@@ -2,6 +2,10 @@
 import React, { useState } from "react";
 import Axios from "axios";
 import { createClient } from "../../../utils/supabase/client";
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+
+
 
 const NutritionTracker = () => {
   const supabase = createClient();
@@ -80,27 +84,27 @@ const NutritionTracker = () => {
 
   return (
     <div>
-      <div className="pt-48 flex justify-center">
-        <form onSubmit={handleSubmit}>
-          <input
+      <div className="pt-24 flex justify-center">
+        <form onSubmit={handleSubmit} className="flex">
+          <Input
             type="text"
-            placeholder="foodQuantity"
+            placeholder="Food Quantity "
             onChange={handleChange}
             name="foodQuantity"
             value={formData.foodQuantity}
-            className="border mx-4"
+            className="border px-2 py-2 mr-8"
           />
-          <input
+          <Input
             type="text"
-            placeholder="foodName"
+            placeholder="Name Of Food"
             onChange={handleChange}
             name="foodName"
             value={formData.foodName}
-            className="border mx-4"
+            className="border px-2 py-2"
           />
-          <button type="submit" className="border">
+          <Button type="submit" className="border ml-8 px-2 py-2">
             Submit
-          </button>
+          </Button>
         </form>
         <div className="pl-12">
           {calories > 0 ? <h1>{calories} kcal</h1> : <h1></h1>}

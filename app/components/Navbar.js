@@ -17,7 +17,7 @@ const Navbar = () => {
   return (
     <div className="sticky top-0 text-black ">
       <nav className="flex w-full px-12 border-b-2 border-solid bg-white items-center ">
-        <div className="py-4">
+        <div className="py-4 ">
           <Link href="/" className="">
             <Image src="/images/logo.png" alt="Logo" width={75} height={75} />
           </Link>
