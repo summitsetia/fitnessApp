@@ -5,6 +5,7 @@ import { createClient } from "@/utils/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import Link from "next/link";
+import { Input } from "@/components/ui/input";
 
 const WorkoutTracker = () => {
   const [showAddDropdown, setShowAddDropdown] = useState(false);
@@ -164,13 +165,13 @@ const WorkoutTracker = () => {
           workoutLog.flatMap((workout, index) => (
             <div className="flex justify-center flex-col">
               <div key={index} className="py-5">
-                <p>{workout.exerciseName}</p>
+                <p className="text-lg font-bold">{workout.exerciseName}</p>
                 {workout.sets.map((set, setIndex) => (
                   <>
-                    <p key={setIndex}>Set {setIndex + 1}</p>
+                    <p key={setIndex} className="py-4">Set {setIndex + 1}</p>
                     <div className=" ">
-                      <form className="lg:space-x-4 sm:space-x-0">
-                        <input
+                      <form className=" flex lg:space-x-4 sm:space-x-0">
+                        <Input
                           type="number"
                           placeholder="weight (in kg)"
                           onChange={(event) =>
@@ -178,9 +179,9 @@ const WorkoutTracker = () => {
                           }
                           name="weight"
                           value={set.weight}
-                          className="border"
+                          className="border px-2 py-2"
                         />
-                        <input
+                        <Input
                           type="number"
                           placeholder="reps"
                           onChange={(event) =>
@@ -188,7 +189,7 @@ const WorkoutTracker = () => {
                           }
                           name="reps"
                           value={set.reps}
-                          className="border"
+                          className="border px-2 py-2"
                         />
                       </form>
                     </div>
