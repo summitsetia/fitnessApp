@@ -22,25 +22,32 @@ const NutritionTracker = () => {
     console.log("clicked");
     console.log("calories from updateTable", calories);
 
-    const { data, error } = await supabase
-      .from("food_log")
-      .insert({
-        calories: calories,
-        protein: protein,
-        carbs: carbs,
-        total_fat: totalFat,
-        foodQuantity: formData.foodQuantity,
-        foodName: formData.foodName,
-      });
+    const { data, error } = await supabase.auth.getUser();
 
-    if (error) {
-      console.log(error);
-      setFetchError("There is An Error");
-    }
     if (data) {
-      console.log(data);
-      setFetchError(null);
+      const { foodData, foodError } = await supabase
+        .from("food_log")
+        .insert({
+          calories: calories,
+          protein: protein,
+          carbs: carbs,
+          total_fat: totalFat,
+          foodQuantity: formData.foodQuantity,
+          foodName: formData.foodName,
+          user_id: data.user.id,
+        });
+
+      if (foodError) {
+        console.log(error);
+        setFetchError("There is An Error");
+      }
+      if (foodData) {
+        console.log(data);
+        setFetchError(null);
+      }
     }
+
+
   };
 
   const handleChange = (event) => {

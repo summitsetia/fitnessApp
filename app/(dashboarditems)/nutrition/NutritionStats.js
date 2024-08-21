@@ -64,22 +64,22 @@ const NutritionStats = () => {
                 <div className="text-center">
                     <h2>Calories Eaten</h2>
                     <h1>{totalCalories} cal</h1>
-                    <Progress value={totalCalories / 3000 * 100} className="" />
+                    <Progress value={totalCalories / 2500 * 100} className="" />
                 </div>
                 <div className="text-center">
                     <h2>Protein</h2>
                     <h1>{totalProtein} g</h1>
-                    <Progress value={totalProtein / 500 * 100} className="" />
+                    <Progress value={totalProtein / 125 * 100} className="" />
                 </div>
                 <div className="text-center">
                     <h2>Carbohydrates</h2>
                     <h1>{totalCarbs} g</h1>
-                    <Progress value={totalCarbs / 20 * 100} className="" />
+                    <Progress value={totalCarbs / 300 * 100} className="" />
                 </div>
                 <div className="text-center">
                     <h2>Total Fat</h2>
                     <h1>{totalFat} g</h1>
-                    <Progress value={totalFat / 150 * 100} className="" />
+                    <Progress value={totalFat / 60 * 100} className="" />
                 </div>
             </div>
         </div>

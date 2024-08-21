@@ -10,7 +10,7 @@ const WorkoutTracker = () => {
   const [showAddDropdown, setShowAddDropdown] = useState(false);
   const [workoutLog, setWorkoutLog] = useState([]);
   const [excerciseName, setExcerciseName] = useState({ name: "" });
-  const [selectedExercise, setSelectedExercise] = useState("");
+  const [selectedExercise] = useState("");
   const supabase = createClient();
 
 
