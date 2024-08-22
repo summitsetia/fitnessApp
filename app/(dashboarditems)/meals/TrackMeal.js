@@ -4,12 +4,15 @@ import Axios from "axios";
 import { createClient } from "../../../utils/supabase/client";
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { useSearchParams } from 'next/navigation'
 
 
 
-const NutritionTracker = () => {
+const TrackMeal = () => {
   const supabase = createClient();
-
+  const searchParams = useSearchParams()
+  const meal = searchParams.get('meal')
+  console.log(meal)
   const [calories, setCalories] = useState(0);
   const [protein, setProtein] = useState(0);
   const [carbs, setCarbs] = useState(0);
@@ -35,6 +38,7 @@ const NutritionTracker = () => {
           foodQuantity: formData.foodQuantity,
           foodName: formData.foodName,
           user_id: data.user.id,
+          meal_type: meal,
         });
 
       if (foodError) {
@@ -125,4 +129,4 @@ const NutritionTracker = () => {
   );
 };
 
-export default NutritionTracker;
+export default TrackMeal;

@@ -58,7 +58,7 @@ const NutritionStats = () => {
     return (
         <div className="flex flex-col items-center mx-12">
             <div className="mb-4">
-                <h1 className="font-bold text-2xl">Today's Stats</h1>
+                <h1 className="font-bold text-3xl">Today's Stats</h1>
             </div>
             <div className="flex space-x-12">
                 <div className="text-center">
