@@ -12,7 +12,6 @@ const TrackMeal = () => {
   const supabase = createClient();
   const searchParams = useSearchParams()
   const meal = searchParams.get('meal')
-  console.log(meal)
   const [calories, setCalories] = useState(0);
   const [protein, setProtein] = useState(0);
   const [carbs, setCarbs] = useState(0);
@@ -94,8 +93,11 @@ const TrackMeal = () => {
   };
 
   return (
-    <div>
-      <div className="pt-24 flex justify-center">
+    <div className="flex-col justify-center">
+      <div className="flex justify-center">
+        <h1>Add {meal} Items</h1>
+      </div>
+      <div className="pt-24 ">
         <form onSubmit={handleSubmit} className="flex">
           <Input
             type="text"
