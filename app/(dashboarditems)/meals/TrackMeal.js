@@ -6,34 +6,28 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useSearchParams } from 'next/navigation'
 
-
-
 const TrackMeal = () => {
   const supabase = createClient();
   const searchParams = useSearchParams()
   const meal = searchParams.get('meal')
-  const [calories, setCalories] = useState(0);
-  const [protein, setProtein] = useState(0);
-  const [carbs, setCarbs] = useState(0);
-  const [totalFat, setTotalFat] = useState(0)
+  const [nutritionData, setNutritionData] = useState({
+    calories: 0,
+    protein: 0,
+    carbs: 0,
+    totalFat: 0
+  });
   const [fetchError, setFetchError] = useState(null);
   const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
   const [formData, setFormData] = useState({ foodQuantity: "", foodName: "" });
 
-  const updateTable = async (calories, protein, carbs, totalFat) => {
-    console.log("clicked");
-    console.log("calories from updateTable", calories);
-
+  const updateTable = async (nutritionData) => {
     const { data, error } = await supabase.auth.getUser();
 
     if (data) {
       const { foodData, foodError } = await supabase
         .from("food_log")
         .insert({
-          calories: calories,
-          protein: protein,
-          carbs: carbs,
-          total_fat: totalFat,
+          ...nutritionData,
           foodQuantity: formData.foodQuantity,
           foodName: formData.foodName,
           user_id: data.user.id,
@@ -42,90 +36,88 @@ const TrackMeal = () => {
 
       if (foodError) {
         console.log(error);
-        setFetchError("There is An Error");
-      }
-      if (foodData) {
-        console.log(data);
+        setFetchError("There was an error logging your meal");
+      } else {
+        console.log(foodData);
         setFetchError(null);
       }
     }
-
-
   };
 
   const handleChange = (event) => {
-    return setFormData((prevData) => {
-      return {
-        ...prevData,
-        [event.target.name]: event.target.value,
-      };
-    });
+    setFormData(prevData => ({
+      ...prevData,
+      [event.target.name]: event.target.value,
+    }));
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault()
-    // window.location.reload();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
-    Axios.get(
-      `https://api.calorieninjas.com/v1/nutrition?query=${formData.foodQuantity} ${formData.foodName}`,
-      {
-        headers: {
-          "X-Api-Key": API_KEY,
-        },
-      }
-    )
-      .then((res) => {
-        console.log(res);
-        setCalories(res.data.items[0].calories);
-        setProtein(res.data.items[0].protein_g);
-        setCarbs(res.data.items[0].carbohydrates_total_g);
-        setTotalFat(res.data.items[0].fat_total_g)
-        updateTable(
-          res.data.items[0].calories,
-          res.data.items[0].protein_g,
-          res.data.items[0].carbohydrates_total_g,
-          res.data.items[0].fat_total_g
-        );
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    try {
+      const res = await Axios.get(
+        `https://api.calorieninjas.com/v1/nutrition?query=${formData.foodQuantity} ${formData.foodName}`,
+        {
+          headers: {
+            "X-Api-Key": API_KEY,
+          },
+        }
+      );
+
+      const newNutritionData = {
+        calories: res.data.items[0].calories,
+        protein: res.data.items[0].protein_g,
+        carbs: res.data.items[0].carbohydrates_total_g,
+        totalFat: res.data.items[0].fat_total_g
+      };
+
+      setNutritionData(newNutritionData);
+      await updateTable(newNutritionData);
+    } catch (error) {
+      console.log(error);
+      setFetchError("Error fetching nutrition data");
+    }
   };
 
   return (
-    <div className="flex-col justify-center">
-      <div className="flex justify-center">
-        <h1>Add {meal} Items</h1>
-      </div>
-      <div className="pt-24 ">
-        <form onSubmit={handleSubmit} className="flex">
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold text-center mb-8">Add {meal} Items</h1>
+      <div className="max-w-md mx-auto">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <Input
             type="text"
-            placeholder="Food Quantity "
+            placeholder="Food Quantity"
             onChange={handleChange}
             name="foodQuantity"
             value={formData.foodQuantity}
-            className="border px-2 py-2 mr-8"
+            className="w-full"
           />
           <Input
             type="text"
-            placeholder="Name Of Food"
+            placeholder="Name of Food"
             onChange={handleChange}
             name="foodName"
             value={formData.foodName}
-            className="border px-2 py-2"
+            className="w-full"
           />
-          <Button type="submit" className="border ml-8 px-2 py-2">
+          <Button type="submit" className="w-full">
             Submit
           </Button>
         </form>
-        <div className="pl-12">
-          {calories > 0 ? <h1>{calories} kcal</h1> : <h1></h1>}
-          {protein > 0 ? <h1>{protein} g</h1> : <h1></h1>}
-          {protein > 0 ? <h1>{carbs} g</h1> : <h1></h1>}
-          {totalFat > 0 ? <h1>{carbs} g</h1> : <h1></h1>}
-        </div>
-        <h1>{fetchError}</h1>
+        {nutritionData.calories > 0 && (
+          <div className="mt-8 p-4 bg-gray-100 rounded-lg">
+            <h2 className="text-xl font-semibold mb-4">Nutrition Information:</h2>
+            <ul className="space-y-2">
+              <li>Calories: {nutritionData.calories} kcal</li>
+              <li>Protein: {nutritionData.protein} g</li>
+              <li>Carbs: {nutritionData.carbs} g</li>
+              <li>Total Fat: {nutritionData.totalFat} g</li>
+            </ul>
+          </div>
+        )}
+        {fetchError && (
+          <p className="mt-4 text-red-500">{fetchError}</p>
+        )}
       </div>
     </div>
   );
