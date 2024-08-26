@@ -70,7 +70,7 @@ const MealRedirect = ({ mealType, reccCalories }) => {
                 </div>
             </div>
             <div className="">
-                {mealInfo ? <p>{addedData} Calories Eaten</p> : <h1> Recommended Calories: {reccCalories} </h1>}
+                {mealInfo ? <p>{addedData.toFixed(2)} Calories Eaten</p> : <h1> Recommended Calories: {reccCalories} </h1>}
             </div>
         </div>
     )

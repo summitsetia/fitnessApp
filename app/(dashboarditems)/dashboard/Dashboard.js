@@ -22,7 +22,8 @@ const Dashboard = () => {
       if (data) {
         console.log(data);
         const todaysDate = new Date().toDateString()
-        const filteredNutritionArray = data.filter((entry) => todaysDate === new Date(entry.date_created).toDateString())
+        const filteredNutritionArray = data.filter((entry) => new Date(entry.created_at).toDateString() === todaysDate)
+        console.log(filteredNutritionArray)
 
         const calorieTotal = filteredNutritionArray.reduce(
           (accumulator, element) => accumulator + element.calories,
