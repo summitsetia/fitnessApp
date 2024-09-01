@@ -1,69 +1,75 @@
-"use client";
 import { Button } from "@/components/ui/button";
-import { createClient } from "@/utils/supabase/client";
-import { useEffect, useState } from "react";
+import Link from "next/link"; // Importing necessary components and libraries
+
+"use client"; // Indicates that this component should run on the client-side
+import { Button } from "@/components/ui/button";
+import { createClient } from "@/utils/supabase/client"; // Importing a custom Supabase client
+import { useEffect, useState } from "react"; // Importing React hooks
 
 const WorkoutHistory = () => {
-  const supabase = createClient();
-  const [workoutData, setWorkoutData] = useState([]);
-  const [excerciseData, setExcerciseData] = useState([]);
-  const [setData, setSetData] = useState([]);
-  const [showHistory, setShowHistory] = useState(false);
+  const supabase = createClient(); // Initializing the Supabase client
+  const [workoutData, setWorkoutData] = useState([]); // State to store workout data
+  const [excerciseData, setExcerciseData] = useState([]); // State to store exercise data
+  const [setData, setSetData] = useState([]); // State to store set data
+  const [showHistory, setShowHistory] = useState(false); // State to control visibility of history
 
   useEffect(() => {
+    // Fetch data when the component mounts
     const fetchData = async () => {
       const { data: workoutData, error: workoutError } = await supabase
         .from("workouts")
-        .select("*");
+        .select("*"); // Fetching all workout data from the 'workouts' table
 
       if (workoutError) {
-        console.log(workoutError);
+        console.log(workoutError); // Log any errors if fetching workout data fails
         return;
       }
 
       if (workoutData) {
-        setWorkoutData(workoutData);
+        setWorkoutData(workoutData); // Update state with fetched workout data
 
         const { data: excerciseData, error: excerciseError } = await supabase
           .from("excercises")
-          .select("*");
+          .select("*"); // Fetching all exercise data from the 'excercises' table
 
         if (excerciseError) {
-          console.log(excerciseError);
+          console.log(excerciseError); // Log any errors if fetching exercise data fails
           return;
         }
 
-        setExcerciseData(excerciseData);
+        setExcerciseData(excerciseData); // Update state with fetched exercise data
 
         const { data: setData, error: setError } = await supabase
           .from("sets")
-          .select("*");
+          .select("*"); // Fetching all set data from the 'sets' table
 
         if (setError) {
-          console.log(setError);
+          console.log(setError); // Log any errors if fetching set data fails
           return;
         }
 
-        setSetData(setData);
+        setSetData(setData); // Update state with fetched set data
       }
     };
 
-    fetchData();
+    fetchData(); // Call the fetchData function to start fetching data
   }, []);
 
   return (
     <div>
       <div className="flex justify-center pb-4">
+        {/* Button to toggle the visibility of the workout history */}
         <Button onClick={() => setShowHistory(!showHistory)}>
           {showHistory ? 'Hide History' : 'Show History'}
         </Button>
       </div>
-      {showHistory && (
+      {showHistory && ( // Conditionally render the history if showHistory is true
         <div>
           <div className="flex justify-center pb-4">
             <h1 className="text-3xl font-bold">History</h1>
           </div>
           <div className="flex flex-col-reverse pl-48 ">
+            {/* Map over workoutData and render each workout's history */}
             {workoutData.map((workout) => (
               <HistoryElement
                 key={workout.id}
@@ -100,6 +106,7 @@ const HistoryElement = ({
         <div className="flex space-x-4">
           <div>
             <h1 className="pb-2 font-bold">Exercise</h1>
+            {/* Filter and map over exercise data to display exercises for the current workout */}
             {excerciseData
               .filter((entry) => entry.workouts_id === workoutId)
               .map((entry) => (
@@ -108,6 +115,7 @@ const HistoryElement = ({
           </div>
           <div>
             <h1 className="pb-2 font-bold">Best Set</h1>
+            {/* Filter exercise data and find the best set for each exercise */}
             {excerciseData
               .filter((excerciseEntry) => excerciseEntry.workouts_id === workoutId)
               .map((excerciseEntry) => {
@@ -117,7 +125,7 @@ const HistoryElement = ({
                     (best, current) =>
                       current.weight > best.weight ? current : best,
                     { weight: 0 }
-                  );
+                  ); // Determine the set with the highest weight
 
                 return (
                   <div key={excerciseEntry.id} className="flex space-x-4">
@@ -133,4 +141,4 @@ const HistoryElement = ({
   );
 };
 
-export default WorkoutHistory;
+export default WorkoutHistory; // Exporting the component as default
