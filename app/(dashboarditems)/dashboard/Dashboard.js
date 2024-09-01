@@ -63,7 +63,6 @@ const Dashboard = () => {
         const oneWeekAgoDate = new Date()
         oneWeekAgoDate.setDate(currentDate.getDate() - 7)
         console.log(oneWeekAgoDate)
-        console.log(new Date(workoutData[0].created_at))
         console.log(currentDate)
 
         const filteredWorkoutsArray = workoutData.filter((workout) => new Date(workout.created_at) >= oneWeekAgoDate && new Date(workout.created_at) <= currentDate)

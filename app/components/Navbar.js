@@ -23,10 +23,10 @@ const Navbar = () => {
           </Link>
         </div>
         <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center space-x-8">
-          <Link className="text-lg font-semibold" href="/workouts">
+          <Link className="text-lg font-semibold hover:underline hover:text-blue-600" href="/workouts">
             Workouts
           </Link>
-          <Link className="text-lg font-semibold" href="/nutrition">
+          <Link className="text-lg font-semibold hover:underline hover:text-blue-600" href="/nutrition">
             Nutrition
           </Link>
           <div className="">

@@ -64,7 +64,6 @@ const TrackMeal = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    // window.location.reload();
 
     Axios.get(
       `https://api.calorieninjas.com/v1/nutrition?query=${formData.foodQuantity} ${formData.foodName}`,
@@ -99,7 +98,7 @@ const TrackMeal = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input
             type="text"
-            placeholder="Food Quantity"
+            placeholder="Food Quantity (e.g 500g)"
             onChange={handleChange}
             name="foodQuantity"
             value={formData.foodQuantity}
@@ -107,7 +106,7 @@ const TrackMeal = () => {
           />
           <Input
             type="text"
-            placeholder="Name of Food"
+            placeholder="Name of Food (e.g chicken breast)"
             onChange={handleChange}
             name="foodName"
             value={formData.foodName}

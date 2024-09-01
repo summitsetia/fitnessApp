@@ -6,6 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 const WorkoutTracker = () => {
   const [showAddDropdown, setShowAddDropdown] = useState(false);
@@ -139,7 +146,7 @@ const WorkoutTracker = () => {
       <div className="">
         <div className="flex justify-between">
           <form className="pb-4">
-            <input
+            <Input
               type="text"
               placeholder="Workout Name"
               name="name"
@@ -217,7 +224,7 @@ const WorkoutTracker = () => {
               onChange={addExercise}
               value={selectedExercise}
             >
-              <option value="default">Choose an exercise</option>
+              <option value="default">Choose An Exercise</option>
               {exerciseData.map((item) => (
                 <option key={item.id} value={item.exercise}>
                   {item.exercise}

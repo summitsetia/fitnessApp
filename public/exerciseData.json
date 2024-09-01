@@ -29,6 +29,30 @@
     },
     {
         "id": 8,
-        "exercise": "Chest Fly (Dumbell)"
+        "exercise": "Chest Fly (Dumbbell)"
+    },
+    {
+        "id": 9,
+        "exercise": "Push-Up"
+    },
+    {
+        "id": 10,
+        "exercise": "Incline Bench Press (Barbell)"
+    },
+    {
+        "id": 11,
+        "exercise": "Decline Bench Press (Barbell)"
+    },
+    {
+        "id": 12,
+        "exercise": "Incline Dumbbell Fly"
+    },
+    {
+        "id": 13,
+        "exercise": "Close-Grip Bench Press"
+    },
+    {
+        "id": 14,
+        "exercise": "Dumbbell Pullover"
     }
 ]

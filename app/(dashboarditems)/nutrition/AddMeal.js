@@ -6,6 +6,8 @@ import { Info } from "lucide-react"
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
+import { Toggle } from "@/components/ui/toggle"
+
 
 
 
@@ -64,9 +66,9 @@ const MealRedirect = ({ mealType, reccCalories }) => {
                     </Link>
                 </div>
                 <div>
-                    <Button onClick={() => setMealInfo(prevValue => !prevValue)}>
+                    <Toggle onClick={() => setMealInfo(prevValue => !prevValue)}>
                         <Info></Info>
-                    </Button>
+                    </Toggle>
                 </div>
             </div>
             <div className="">

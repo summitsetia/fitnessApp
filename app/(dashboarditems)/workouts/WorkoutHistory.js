@@ -63,7 +63,7 @@ const WorkoutHistory = () => {
           <div className="flex justify-center pb-4">
             <h1 className="text-3xl font-bold">History</h1>
           </div>
-          <div className="flex flex-col-reverse ">
+          <div className="flex flex-col-reverse pl-48 ">
             {workoutData.map((workout) => (
               <HistoryElement
                 key={workout.id}
