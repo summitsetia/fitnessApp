@@ -5,79 +5,117 @@ import { createClient } from "../../../utils/supabase/client";
 
 const Dashboard = () => {
   const supabase = createClient();
-  const [numberOfWorkouts, setNumberOfWorkouts] = useState(0)
+  const [numberOfWorkouts, setNumberOfWorkouts] = useState(0);
   const [totalCalories, setTotalCalories] = useState(0);
   const [totalProtein, setTotalProtein] = useState(0);
   const [totalCarbs, setTotalCarbs] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data, error } = await supabase.from("food_log").select();
+      const { data: userData, error: userError } =
+        await supabase.auth.getUser();
+      if (userData) {
+        console.log(`userdata: ${userData}`);
 
-      if (error) {
-        console.log(error);
-        setFetchError("There is an error");
+        const { data, error } = await supabase
+          .from("food_log")
+          .select()
+          .eq("users_id", userData.user.id);
+
+        if (error) {
+          console.log(error);
+          setFetchError("There is an error");
+        }
+
+        if (data) {
+          console.log(data);
+          const todaysDate = new Date().toDateString();
+          const filteredNutritionArray = data.filter(
+            (entry) => new Date(entry.created_at).toDateString() === todaysDate
+          );
+          console.log(filteredNutritionArray);
+
+          const calorieTotal = filteredNutritionArray.reduce(
+            (accumulator, element) => accumulator + element.calories,
+            0
+          );
+          setTotalCalories(calorieTotal.toFixed(2));
+
+          const proteinTotal = filteredNutritionArray.reduce(
+            (accumulator, element) => accumulator + element.protein,
+            0
+          );
+          setTotalProtein(proteinTotal.toFixed(2));
+
+          const carbsTotal = filteredNutritionArray.reduce(
+            (accumulator, element) => accumulator + element.carbs,
+            0
+          );
+          setTotalCarbs(carbsTotal.toFixed(2));
+        }
+      }
+      if (userError) {
+        console.log(userError);
       }
 
-      if (data) {
-        console.log(data);
-        const todaysDate = new Date().toDateString()
-        const filteredNutritionArray = data.filter((entry) => new Date(entry.created_at).toDateString() === todaysDate)
-        console.log(filteredNutritionArray)
+      const { data: workoutData, error: workoutError } = await supabase
+        .from("workouts")
+        .select("*")
+        .eq("users_id", userData.user.id);
 
-        const calorieTotal = filteredNutritionArray.reduce(
-          (accumulator, element) => accumulator + element.calories,
-          0
+      if (workoutData) {
+        const currentDate = new Date();
+        const oneWeekAgoDate = new Date();
+        oneWeekAgoDate.setDate(currentDate.getDate() - 7);
+        console.log(oneWeekAgoDate);
+        console.log(new Date(workoutData[0].created_at));
+        console.log(currentDate);
+
+        const filteredWorkoutsArray = workoutData.filter(
+          (workout) =>
+            new Date(workout.created_at) >= oneWeekAgoDate &&
+            new Date(workout.created_at) <= currentDate
         );
-        setTotalCalories(calorieTotal.toFixed(2));
-
-        const proteinTotal = filteredNutritionArray.reduce(
-          (accumulator, element) => accumulator + element.protein,
-          0
-        );
-        setTotalProtein(proteinTotal.toFixed(2));
-
-        const carbsTotal = filteredNutritionArray.reduce(
-          (accumulator, element) => accumulator + element.carbs,
-          0
-        );
-        setTotalCarbs(carbsTotal.toFixed(2));
-
+        setNumberOfWorkouts(filteredWorkoutsArray.length);
       }
 
+      if (workoutError) {
+        console.log(workoutError);
+      }
     };
-
 
     fetchData();
   }, []);
 
+  // useEffect(() => {
+  //   const fetchWorkoutData = async () => {
+  //     const { data: workoutData, error: workoutError } = await supabase
+  //       .from("workouts")
+  //       .select("*")
+  //       .eq("user_id", userData.user.id);
 
-  useEffect(() => {
-    const fetchWorkoutData = async () => {
-      const { data: workoutData, error: workoutError } = await supabase
-        .from('workouts')
-        .select('*')
+  //     if (workoutData) {
+  //       const currentDate = new Date();
+  //       const oneWeekAgoDate = new Date();
+  //       oneWeekAgoDate.setDate(currentDate.getDate() - 7);
+  //       console.log(oneWeekAgoDate);
+  //       console.log(new Date(workoutData[0].created_at));
+  //       console.log(currentDate);
 
-      if (workoutData) {
-        const currentDate = new Date()
-        const oneWeekAgoDate = new Date()
-        oneWeekAgoDate.setDate(currentDate.getDate() - 7)
-        console.log(oneWeekAgoDate)
-        console.log(new Date(workoutData[0].created_at))
-        console.log(currentDate)
+  //       const filteredWorkoutsArray = workoutData.filter(
+  //         (workout) =>
+  //           new Date(workout.created_at) >= oneWeekAgoDate &&
+  //           new Date(workout.created_at) <= currentDate
+  //       );
+  //       setNumberOfWorkouts(filteredWorkoutsArray.length);
+  //     }
 
-        const filteredWorkoutsArray = workoutData.filter((workout) => new Date(workout.created_at) >= oneWeekAgoDate && new Date(workout.created_at) <= currentDate)
-        setNumberOfWorkouts(filteredWorkoutsArray.length)
-
-      }
-
-      if (workoutError) {
-        console.log(workoutError)
-      }
-
-    }
-    fetchWorkoutData()
-  }, [])
+  //     if (workoutError) {
+  //       console.log(workoutError);
+  //     }
+  //   };
+  //   fetchWorkoutData();
+  // }, []);
 
   return (
     <div className="py-36 ">

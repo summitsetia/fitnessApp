@@ -12,39 +12,44 @@ const WorkoutHistory = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data: workoutData, error: workoutError } = await supabase
-        .from("workouts")
-        .select("*");
+      const { data: userData, error: userError } =
+        await supabase.auth.getUser();
+      if (userData) {
+        const { data: workoutData, error: workoutError } = await supabase
+          .from("workouts")
+          .select("*")
+          .eq("users.id", userData.user.id);
 
-      if (workoutError) {
-        console.log(workoutError);
-        return;
-      }
-
-      if (workoutData) {
-        setWorkoutData(workoutData);
-
-        const { data: excerciseData, error: excerciseError } = await supabase
-          .from("excercises")
-          .select("*");
-
-        if (excerciseError) {
-          console.log(excerciseError);
+        if (workoutError) {
+          console.log(workoutError);
           return;
         }
 
-        setExcerciseData(excerciseData);
+        if (workoutData) {
+          setWorkoutData(workoutData);
 
-        const { data: setData, error: setError } = await supabase
-          .from("sets")
-          .select("*");
+          const { data: excerciseData, error: excerciseError } = await supabase
+            .from("excercises")
+            .select("*");
 
-        if (setError) {
-          console.log(setError);
-          return;
+          if (excerciseError) {
+            console.log(excerciseError);
+            return;
+          }
+
+          setExcerciseData(excerciseData);
+
+          const { data: setData, error: setError } = await supabase
+            .from("sets")
+            .select("*");
+
+          if (setError) {
+            console.log(setError);
+            return;
+          }
+
+          setSetData(setData);
         }
-
-        setSetData(setData);
       }
     };
 
@@ -55,7 +60,7 @@ const WorkoutHistory = () => {
     <div>
       <div className="flex justify-center pb-4">
         <Button onClick={() => setShowHistory(!showHistory)}>
-          {showHistory ? 'Hide History' : 'Show History'}
+          {showHistory ? "Hide History" : "Show History"}
         </Button>
       </div>
       {showHistory && (
@@ -109,10 +114,14 @@ const HistoryElement = ({
           <div>
             <h1 className="pb-2 font-bold">Best Set</h1>
             {excerciseData
-              .filter((excerciseEntry) => excerciseEntry.workouts_id === workoutId)
+              .filter(
+                (excerciseEntry) => excerciseEntry.workouts_id === workoutId
+              )
               .map((excerciseEntry) => {
                 const bestSet = setData
-                  .filter((setEntry) => setEntry.excercise_id === excerciseEntry.id)
+                  .filter(
+                    (setEntry) => setEntry.excercise_id === excerciseEntry.id
+                  )
                   .reduce(
                     (best, current) =>
                       current.weight > best.weight ? current : best,
