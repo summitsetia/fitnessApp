@@ -20,36 +20,30 @@ const AddMeal = () => {
   );
 };
 
+// Define the MealRedirect component
 const MealRedirect = ({ mealType, reccCalories }) => {
   const supabase = createClient();
   const [mealInfo, setMealInfo] = useState(false);
   const [mealData, setMealData] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
-      const { data: userData, error: userError } =
-        await supabase.auth.getUser();
-      if (userData) {
-        const { data, error } = await supabase
-          .from("food_log")
-          .select("*")
-          .eq("users_id", userData.user.id);
+      const { data, error } = await supabase.from("food_log").select("*");
 
-        if (data) {
-          console.log(data);
-          const currentDate = new Date().toDateString();
-          const filteredNutritionData = data.filter(
-            (entry) =>
-              new Date(entry.created_at).toDateString() === currentDate &&
-              entry.meal_type === mealType
-          );
+      if (data) {
+        console.log(data);
+        const currentDate = new Date().toDateString();
+        const filteredNutritionData = data.filter(
+          (entry) =>
+            new Date(entry.created_at).toDateString() === currentDate &&
+            entry.meal_type === mealType
+        );
 
-          setMealData(filteredNutritionData);
-          console.log(filteredNutritionData);
-        }
+        setMealData(filteredNutritionData);
+        console.log(filteredNutritionData);
+      }
 
-        if (error) {
-          console.log(error);
-        }
+      if (error) {
+        console.log(error);
       }
     };
 

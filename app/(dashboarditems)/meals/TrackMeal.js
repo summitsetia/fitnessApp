@@ -19,10 +19,10 @@ const TrackMeal = () => {
   const [formData, setFormData] = useState({ foodQuantity: "", foodName: "" });
 
   const updateTable = async (calories, protein, carbs, totalFat) => {
-    console.log("clicked");
-    console.log("calories from updateTable", calories);
+    console.log("clicked"); // Logging to console when the function is triggered.
+    console.log("calories from updateTable", calories); // Logging the calories being passed to the function.
 
-    const { data, error } = await supabase.auth.getUser();
+    const { data, error } = await supabase.auth.getUser(); // Fetching the authenticated user's data from Supabase.
 
     if (data) {
       const { foodData, foodError } = await supabase.from("food_log").insert({
@@ -32,17 +32,19 @@ const TrackMeal = () => {
         total_fat: totalFat,
         foodQuantity: formData.foodQuantity,
         foodName: formData.foodName,
-        users_id: data.user.id,
+        user_id: data.user.id,
         meal_type: meal,
       });
 
       if (foodError) {
-        console.log(error);
-        setFetchError("There is An Error");
+        // If there is an error inserting data.
+        console.log(error); // Log the error to the console.
+        setFetchError("There is An Error"); // Set the error state to display an error message.
       }
       if (foodData) {
-        console.log(data);
-        setFetchError(null);
+        // If data is successfully inserted.
+        console.log(data); // Log the user data to the console.
+        setFetchError(null); // Clear any previous fetch error.
       }
     }
   };
@@ -54,7 +56,7 @@ const TrackMeal = () => {
         [event.target.name]: event.target.value,
       };
     });
-  };
+  }; // Update formData state with the new input values.
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -79,37 +81,43 @@ const TrackMeal = () => {
           res.data.items[0].protein_g,
           res.data.items[0].carbohydrates_total_g,
           res.data.items[0].fat_total_g
-        );
+        ); // Call updateTable to save the nutrition data to the database.
       })
       .catch((error) => {
-        console.log(error);
+        console.log(error); // Log any error that occurs during the API request.
       });
   };
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-center mb-8">Add {meal} Items</h1>
+      <h1 className="text-3xl font-bold text-center mb-8">Add {meal} Items</h1>{" "}
+      {/* Display the meal type as a header. */}
       <div className="max-w-md mx-auto">
         <form onSubmit={handleSubmit} className="space-y-4">
+          {" "}
+          {/* Form submission handler. */}
           <Input
             type="text"
-            placeholder="Food Quantity (g)"
+            placeholder="Food Quantity"
             onChange={handleChange}
             name="foodQuantity"
             value={formData.foodQuantity}
             className="w-full"
-          />
+          />{" "}
+          {/* Input field for food quantity. */}
           <Input
             type="text"
-            placeholder="Name of Food"
+            placeholder="Name of Food (e.g chicken breast)"
             onChange={handleChange}
             name="foodName"
             value={formData.foodName}
             className="w-full"
-          />
+          />{" "}
+          {/* Input field for food name. */}
           <Button type="submit" className="w-full">
             Submit
-          </Button>
+          </Button>{" "}
+          {/* Submit button to trigger the form submission. */}
         </form>
         {calories > 0 && (
           <div className="mt-8 p-4 bg-gray-100 rounded-lg">
@@ -117,10 +125,10 @@ const TrackMeal = () => {
               Nutrition Information:
             </h2>
             <ul className="space-y-2">
-              <li>Calories: {calories} kcal</li>
-              <li>Protein: {protein} g</li>
-              <li>Carbs: {carbs} g</li>
-              <li>Total Fat: {totalFat} g</li>
+              <li>Calories: {calories} kcal</li> {/* Display calories */}
+              <li>Protein: {protein} g</li> {/* Display protein */}
+              <li>Carbs: {carbs} g</li> {/* Display carbs */}
+              <li>Total Fat: {totalFat} g</li> {/* Display total fat */}
             </ul>
           </div>
         )}
@@ -130,4 +138,4 @@ const TrackMeal = () => {
   );
 };
 
-export default TrackMeal;
+export default TrackMeal; // Exporting the TrackMeal component as the default export.

@@ -1,30 +1,38 @@
-"use client";
-import React, { useState } from "react";
-import exerciseData from "@/public/exerciseData.json";
-import { createClient } from "@/utils/supabase/client";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
-import Link from "next/link";
-import { Input } from "@/components/ui/input";
+"use client"; // This directive indicates that the component should be rendered on the client-side.
+
+import React, { useState } from "react"; // Importing React and the useState hook.
+import exerciseData from "@/public/exerciseData.json"; // Importing exercise data from a JSON file.
+import { createClient } from "@/utils/supabase/client"; // Importing a function to create a Supabase client.
+import { Button } from "@/components/ui/button"; // Importing a Button component.
+import { Plus } from "lucide-react"; // Importing a Plus icon from the lucide-react library.
+import Link from "next/link"; // Importing the Link component for client-side navigation.
+import { Input } from "@/components/ui/input"; // Importing an Input component.
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"; // Importing Select components for creating dropdowns.
 
 const WorkoutTracker = () => {
-  const [showAddDropdown, setShowAddDropdown] = useState(false);
-  const [workoutLog, setWorkoutLog] = useState([]);
-  const [excerciseName, setExcerciseName] = useState({ name: "" });
-  const [selectedExercise] = useState("");
-  const supabase = createClient();
-
+  const [showAddDropdown, setShowAddDropdown] = useState(false); // State to toggle the visibility of the add exercise dropdown.
+  const [workoutLog, setWorkoutLog] = useState([]); // State to store the workout log data.
+  const [excerciseName, setExcerciseName] = useState({ name: "" }); // State to store the name of the exercise.
+  const [selectedExercise] = useState(""); // State to store the selected exercise.
+  const supabase = createClient(); // Creating a Supabase client instance.
 
   const submitData = async () => {
-    const { data, error } = await supabase.auth.getUser();
+    const { data, error } = await supabase.auth.getUser(); // Retrieving the current authenticated user.
     if (data) {
-      console.log(data);
+      console.log(data); // Logging user data.
       const { data: workoutData, error: workoutError } = await supabase
         .from("workouts")
         .insert({ users_id: data.user.id, workout_name: excerciseName.name })
-        .select("*");
+        .select("*"); // Inserting workout data into the "workouts" table.
+
       if (workoutData) {
-        console.log(workoutData);
+        console.log(workoutData); // Logging inserted workout data.
         const { data: excerciseData, error: excerciseError } = await supabase
           .from("excercises")
           .insert(
@@ -33,9 +41,10 @@ const WorkoutTracker = () => {
               name: excercise.exerciseName,
             }))
           )
-          .select("*");
+          .select("*"); // Inserting exercises into the "excercises" table.
+
         if (excerciseData) {
-          console.log(excerciseData);
+          console.log(excerciseData); // Logging inserted exercise data.
           const { data: setsData, error: setsError } = await supabase
             .from("sets")
             .insert(
@@ -48,35 +57,34 @@ const WorkoutTracker = () => {
                 }))
               )
             )
-
-            .select("*");
+            .select("*"); // Inserting sets into the "sets" table.
 
           if (setsData) {
-            console.log(setsData);
+            console.log(setsData); // Logging inserted sets data.
           }
 
           if (setsError) {
-            console.log(setsError);
+            console.log(setsError); // Logging sets insertion error.
           }
         }
 
         if (excerciseError) {
-          console.log(excerciseError);
+          console.log(excerciseError); // Logging exercise insertion error.
         }
       }
 
       if (workoutError) {
-        console.log(workoutError);
+        console.log(workoutError); // Logging workout insertion error.
       }
     }
 
     if (error) {
-      console.log(error);
+      console.log(error); // Logging user retrieval error.
     }
   };
 
   function addExercise(event) {
-    const { value } = event.target;
+    const { value } = event.target; // Destructuring value from the event target.
     if (value !== "default") {
       setWorkoutLog([
         ...workoutLog,
@@ -90,13 +98,13 @@ const WorkoutTracker = () => {
             },
           ],
         },
-      ]);
-      setShowAddDropdown(false);
+      ]); // Adding a new exercise to the workout log.
+      setShowAddDropdown(false); // Hiding the add exercise dropdown.
     }
   }
 
   function handleChange(event, workoutId, setIndex) {
-    const { name, value } = event.target;
+    const { name, value } = event.target; // Destructuring name and value from the event target.
 
     setWorkoutLog((prevValue) =>
       prevValue.map((workout) =>
@@ -109,11 +117,11 @@ const WorkoutTracker = () => {
           }
           : workout
       )
-    );
+    ); // Updating the weight or reps for a specific set.
   }
 
   function handleAddSet(workoutId) {
-    console.log(workoutId);
+    console.log(workoutId); // Logging the workout ID.
     setWorkoutLog((prevWorkoutLog) =>
       prevWorkoutLog.map((workout) =>
         workout.id === workoutId
@@ -123,15 +131,15 @@ const WorkoutTracker = () => {
           }
           : workout
       )
-    );
+    ); // Adding a new set to a specific exercise.
   }
 
   const handleNameChange = (event) => {
-    const { name, value } = event.target;
+    const { name, value } = event.target; // Destructuring name and value from the event target.
     setExcerciseName(() => ({
       [name]: value,
-    }));
-    console.log(excerciseName);
+    })); // Updating the exercise name.
+    console.log(excerciseName); // Logging the exercise name.
   };
 
   return (
@@ -139,13 +147,13 @@ const WorkoutTracker = () => {
       <div className="">
         <div className="flex justify-between">
           <form className="pb-4">
-            <input
+            <Input
               type="text"
               placeholder="Workout Name"
               name="name"
               value={excerciseName.name}
               onChange={handleNameChange}
-            />
+            /> {/* Input field for entering the workout name */}
           </form>
           {workoutLog.length > 0 && (
             <div className="">
@@ -156,7 +164,7 @@ const WorkoutTracker = () => {
                   onClick={submitData}
                 >
                   Finish
-                </Button>
+                </Button> {/* Button to submit the workout data */}
               </Link>
             </div>
           )}
@@ -165,10 +173,10 @@ const WorkoutTracker = () => {
           workoutLog.flatMap((workout, index) => (
             <div className="flex justify-center flex-col">
               <div key={index} className="py-5">
-                <p className="text-lg font-bold">{workout.exerciseName}</p>
+                <p className="text-lg font-bold">{workout.exerciseName}</p> {/* Displaying the exercise name */}
                 {workout.sets.map((set, setIndex) => (
                   <>
-                    <p key={setIndex} className="py-4">Set {setIndex + 1}</p>
+                    <p key={setIndex} className="py-4">Set {setIndex + 1}</p> {/* Displaying set number */}
                     <div className=" ">
                       <form className=" flex lg:space-x-4 sm:space-x-0">
                         <Input
@@ -180,7 +188,7 @@ const WorkoutTracker = () => {
                           name="weight"
                           value={set.weight}
                           className="border px-2 py-2"
-                        />
+                        /> {/* Input for weight */}
                         <Input
                           type="number"
                           placeholder="reps"
@@ -190,7 +198,7 @@ const WorkoutTracker = () => {
                           name="reps"
                           value={set.reps}
                           className="border px-2 py-2"
-                        />
+                        /> {/* Input for reps */}
                       </form>
                     </div>
                   </>
@@ -202,7 +210,7 @@ const WorkoutTracker = () => {
                   >
                     <Plus className="mr-2 h-4 w-4" />
                     Add Set
-                  </Button>
+                  </Button> {/* Button to add another set */}
                 </div>
               </div>
             </div>
@@ -217,13 +225,13 @@ const WorkoutTracker = () => {
               onChange={addExercise}
               value={selectedExercise}
             >
-              <option value="default">Choose an exercise</option>
+              <option value="default">Choose An Exercise</option>
               {exerciseData.map((item) => (
                 <option key={item.id} value={item.exercise}>
                   {item.exercise}
                 </option>
               ))}
-            </select>
+            </select> {/* Dropdown to select an exercise */}
           </>
         ) : (
           <div className="flex justify-center ">
@@ -232,18 +240,17 @@ const WorkoutTracker = () => {
               onClick={() => setShowAddDropdown(true)}
             >
               Add Exercise
-            </Button>
+            </Button> {/* Button to show the add exercise dropdown */}
           </div>
         )}
         <div className="flex justify-center my-4">
           <Button variant="destructive" className="w-32" asChild>
             <Link href="/workouts">Cancel Workout</Link>
-          </Button>
+          </Button> {/* Button to cancel the workout */}
         </div>
       </div>
     </div>
   );
 };
 
-export default WorkoutTracker;
-
+export default WorkoutTracker; // Exporting the WorkoutTracker component as the default export.
