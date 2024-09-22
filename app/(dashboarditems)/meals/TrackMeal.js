@@ -2,20 +2,18 @@
 import React, { useState } from "react";
 import Axios from "axios";
 import { createClient } from "../../../utils/supabase/client";
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { useSearchParams } from 'next/navigation'
-
-
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { useSearchParams } from "next/navigation";
 
 const TrackMeal = () => {
   const supabase = createClient();
-  const searchParams = useSearchParams()
-  const meal = searchParams.get('meal')
+  const searchParams = useSearchParams();
+  const meal = searchParams.get("meal");
   const [calories, setCalories] = useState(0);
   const [protein, setProtein] = useState(0);
   const [carbs, setCarbs] = useState(0);
-  const [totalFat, setTotalFat] = useState(0)
+  const [totalFat, setTotalFat] = useState(0);
   const [fetchError, setFetchError] = useState(null);
   const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
   const [formData, setFormData] = useState({ foodQuantity: "", foodName: "" });
@@ -27,18 +25,16 @@ const TrackMeal = () => {
     const { data, error } = await supabase.auth.getUser();
 
     if (data) {
-      const { foodData, foodError } = await supabase
-        .from("food_log")
-        .insert({
-          calories: calories,
-          protein: protein,
-          carbs: carbs,
-          total_fat: totalFat,
-          foodQuantity: formData.foodQuantity,
-          foodName: formData.foodName,
-          user_id: data.user.id,
-          meal_type: meal,
-        });
+      const { foodData, foodError } = await supabase.from("food_log").insert({
+        calories: calories,
+        protein: protein,
+        carbs: carbs,
+        total_fat: totalFat,
+        foodQuantity: formData.foodQuantity,
+        foodName: formData.foodName,
+        users_id: data.user.id,
+        meal_type: meal,
+      });
 
       if (foodError) {
         console.log(error);
@@ -49,8 +45,6 @@ const TrackMeal = () => {
         setFetchError(null);
       }
     }
-
-
   };
 
   const handleChange = (event) => {
@@ -63,7 +57,7 @@ const TrackMeal = () => {
   };
 
   const handleSubmit = (event) => {
-    event.preventDefault()
+    event.preventDefault();
     // window.location.reload();
 
     Axios.get(
@@ -79,7 +73,7 @@ const TrackMeal = () => {
         setCalories(res.data.items[0].calories);
         setProtein(res.data.items[0].protein_g);
         setCarbs(res.data.items[0].carbohydrates_total_g);
-        setTotalFat(res.data.items[0].fat_total_g)
+        setTotalFat(res.data.items[0].fat_total_g);
         updateTable(
           res.data.items[0].calories,
           res.data.items[0].protein_g,
@@ -99,7 +93,7 @@ const TrackMeal = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input
             type="text"
-            placeholder="Food Quantity"
+            placeholder="Food Quantity (g)"
             onChange={handleChange}
             name="foodQuantity"
             value={formData.foodQuantity}
@@ -119,7 +113,9 @@ const TrackMeal = () => {
         </form>
         {calories > 0 && (
           <div className="mt-8 p-4 bg-gray-100 rounded-lg">
-            <h2 className="text-xl font-semibold mb-4">Nutrition Information:</h2>
+            <h2 className="text-xl font-semibold mb-4">
+              Nutrition Information:
+            </h2>
             <ul className="space-y-2">
               <li>Calories: {calories} kcal</li>
               <li>Protein: {protein} g</li>
@@ -128,9 +124,7 @@ const TrackMeal = () => {
             </ul>
           </div>
         )}
-        {fetchError && (
-          <p className="mt-4 text-red-500">{fetchError}</p>
-        )}
+        {fetchError && <p className="mt-4 text-red-500">{fetchError}</p>}
       </div>
     </div>
   );

@@ -41,7 +41,7 @@ export async function signup(formData: FormData) {
     console.log(data);
     const { error: createUserError } = await supabase
       .from("profiles")
-      .insert({ id: data.user.id });
+      .insert({ id: data?.user?.id });
 
     if (createUserError) {
       console.log(createUserError);

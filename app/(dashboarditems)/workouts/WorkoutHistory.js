@@ -15,10 +15,11 @@ const WorkoutHistory = () => {
       const { data: userData, error: userError } =
         await supabase.auth.getUser();
       if (userData) {
+        console.log(userData);
         const { data: workoutData, error: workoutError } = await supabase
           .from("workouts")
           .select("*")
-          .eq("users.id", userData.user.id);
+          .eq("users_id", userData.user.id);
 
         if (workoutError) {
           console.log(workoutError);
