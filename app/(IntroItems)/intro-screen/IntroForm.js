@@ -13,6 +13,27 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+const calculatedNutrition = (weight, height, age, gender, activity) => {
+  let activityMultiplier = 1.2;
+  if (activity === "light") activityMultiplier = 1.375;
+  if (activity === "moderate") activityMultiplier = 1.55;
+  if (activity === "active") activityMultiplier = 1.725;
+  if (activity === "very active") activityMultiplier = 1.9;
+
+  let bmi;
+  if (gender === 'male') {
+    bmi = ((13.397 * weight) + (4.799 * height) - (5.677 * age) + 88.362) * activityMultiplier
+  } else {
+    bmi = ((9.247 * weight) + (3.098 * height) - (4.330 * age) + 447.593) * activityMultiplier
+  }
+
+  const protein = (weight * 2.205) * 0.9
+  const carbs = ((bmi / 2) / 4)
+  const total_fat = ((bmi * 0.3) / 9)
+
+  return { bmi, protein, carbs, total_fat }
+}
+
 const IntroForm = () => {
   const supabase = createClient();
   const router = useRouter();
@@ -31,7 +52,7 @@ const IntroForm = () => {
     const { data: userData, error: userError } = await supabase.auth.getUser();
 
     if (userData) {
-      const { data, error } = await supabase.from("user_metrics").insert({
+      const { data: metricsData, error: metricsError } = await supabase.from("user_metrics").insert({
         id: userData.user.id,
         weight: formData.weight,
         height: formData.height,
@@ -40,13 +61,37 @@ const IntroForm = () => {
         activity: formData.activity,
       });
 
-      if (data) {
-        console.log(data);
+      if (metricsData) {
+        console.log(metricsData);
       }
 
-      if (error) {
-        console.log(error);
+      if (metricsError) {
+        console.log(metricsError);
       }
+    }
+
+    const { bmi, protein, carbs, total_fat } = calculatedNutrition(
+      formData.weight,
+      formData.height,
+      formData.age,
+      formData.gender,
+      formData.activity,
+    )
+
+    const { data: nutritionData, error: nutritionError } = await supabase.from('user_nutrition').insert({
+      id: userData.user.id,
+      calories: bmi.toFixed(0),
+      protein: protein.toFixed(0),
+      carbs: carbs.toFixed(0),
+      total_fat: total_fat.toFixed(0),
+    })
+
+    if (nutritionData) {
+      console.log(nutritionData)
+    }
+
+    if (nutritionError) {
+      console.log(nutritionError)
     }
 
     if (userError) {
@@ -120,42 +165,6 @@ const IntroForm = () => {
             value={formData.age}
           />
           <div className="space-y-8">
-            {/* <label>
-              Gender:
-              <select
-                name="gender"
-                value={formData.gender}
-                onChange={handleChange}
-                id="gender"
-                className="w-full border border-gray-300 rounded-lg "
-              >
-                <option value="" selected disabled hidden>
-                  Choose here
-                </option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-              </select>
-            </label> */}
-            {/* <label>
-              Activity Level:
-              <select
-                name="activity"
-                value={formData.activity}
-                onChange={handleChange}
-                id="activity"
-                className="w-full border border-gray-300 rounded-lg "
-              >
-                <option value="" selected disabled hidden>
-                  Choose here
-                </option>
-                <option value="light">Exercise 1-3 times/week</option>
-                <option value="moderate">Exercise 4-5 times/week</option>
-                <option value="active">Heavy Exercise 3-4 times/week</option>
-                <option value="very active">
-                  Intense Exercise 6-7 times/week
-                </option>
-              </select>
-            </label> */}
             <Select value={formData.gender} onValueChange={handleGenderChange}>
               <SelectTrigger>
                 <SelectValue placeholder="Select Gender" />
