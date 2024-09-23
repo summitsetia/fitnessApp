@@ -1,18 +1,7 @@
-// Importing the Button component from a custom UI library
-import { Button } from "@/components/ui/button";
-// Importing the Link component from Next.js for client-side navigation
-import Link from "next/link";
-// Enabling "use client" to ensure the component runs in the client environment
 "use client";
-// Importing React for JSX usage
-import React from "react";
-// Importing Image component from Next.js for optimized image rendering
-import Image from "next/image";
-// Re-importing the Link component (duplicate import, might not be necessary)
 import Link from "next/link";
-// Importing a custom logout action
+import Image from "next/image";
 import logout from "../logout/actions";
-// Importing components from a custom DropdownMenu UI library
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,13 +10,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-// Importing the User icon from the lucide-react library
 import { User } from "lucide-react";
 
-// Defining the Navbar functional component
 const Navbar = () => {
   return (
-    // A div with sticky positioning and styling for the navbar
     <div className="sticky top-0 text-black ">
       {/* Main navigation bar with styling */}
       <nav className="flex w-full px-12 border-b-2 border-solid bg-white items-center ">

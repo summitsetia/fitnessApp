@@ -1,6 +1,3 @@
-import { Button } from "@/components/ui/button";
-import Link from "next/link"; // Importing necessary components and libraries
-
 "use client"; // Indicates that this component should run on the client-side
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/utils/supabase/client"; // Importing a custom Supabase client
@@ -14,9 +11,7 @@ const WorkoutHistory = () => {
   const [showHistory, setShowHistory] = useState(false); // State to control visibility of history
 
   useEffect(() => {
-    // Fetch data when the component mounts
     const fetchData = async () => {
-<<<<<<< HEAD
       const { data: userData, error: userError } =
         await supabase.auth.getUser();
       if (userData) {
@@ -56,41 +51,6 @@ const WorkoutHistory = () => {
 
           setSetData(setData);
         }
-=======
-      const { data: workoutData, error: workoutError } = await supabase
-        .from("workouts")
-        .select("*"); // Fetching all workout data from the 'workouts' table
-
-      if (workoutError) {
-        console.log(workoutError); // Log any errors if fetching workout data fails
-        return;
-      }
-
-      if (workoutData) {
-        setWorkoutData(workoutData); // Update state with fetched workout data
-
-        const { data: excerciseData, error: excerciseError } = await supabase
-          .from("excercises")
-          .select("*"); // Fetching all exercise data from the 'excercises' table
-
-        if (excerciseError) {
-          console.log(excerciseError); // Log any errors if fetching exercise data fails
-          return;
-        }
-
-        setExcerciseData(excerciseData); // Update state with fetched exercise data
-
-        const { data: setData, error: setError } = await supabase
-          .from("sets")
-          .select("*"); // Fetching all set data from the 'sets' table
-
-        if (setError) {
-          console.log(setError); // Log any errors if fetching set data fails
-          return;
-        }
-
-        setSetData(setData); // Update state with fetched set data
->>>>>>> a28624d871e5d88a65ba76d1e3af2de1f128990e
       }
     };
 
