@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+// Nutrition calculation function
 const calculatedNutrition = (weight, height, age, gender, activity) => {
   let activityMultiplier = 1.2;
   if (activity === "light") activityMultiplier = 1.375;
@@ -21,22 +22,28 @@ const calculatedNutrition = (weight, height, age, gender, activity) => {
   if (activity === "very active") activityMultiplier = 1.9;
 
   let bmi;
-  if (gender === 'male') {
-    bmi = ((13.397 * weight) + (4.799 * height) - (5.677 * age) + 88.362) * activityMultiplier
+  if (gender === "male") {
+    bmi =
+      (13.397 * weight + 4.799 * height - 5.677 * age + 88.362) *
+      activityMultiplier;
   } else {
-    bmi = ((9.247 * weight) + (3.098 * height) - (4.330 * age) + 447.593) * activityMultiplier
+    bmi =
+      (9.247 * weight + 3.098 * height - 4.33 * age + 447.593) *
+      activityMultiplier;
   }
 
-  const protein = (weight * 2.205) * 0.9
-  const carbs = ((bmi / 2) / 4)
-  const total_fat = ((bmi * 0.3) / 9)
+  const protein = weight * 2.205 * 0.9;
+  const carbs = bmi / 2 / 4;
+  const total_fat = (bmi * 0.3) / 9;
 
-  return { bmi, protein, carbs, total_fat }
-}
+  return { bmi, protein, carbs, total_fat };
+};
 
+// Main form component
 const IntroForm = () => {
   const supabase = createClient();
   const router = useRouter();
+
   const [formData, setFormData] = useState({
     weight: "",
     height: "",
@@ -45,21 +52,37 @@ const IntroForm = () => {
     activity: "",
   });
 
+  // Function to handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
+
+    // Validate form data
+    // if (weight <= 0 || weight > 500) {
+    //   alert("Weight must be between 1 and 500 kg");
+    //   return;
+    // }
+    // if (height <= 0 || height > 250) {
+    //   alert("Height must be between 1 and 250 cm");
+    //   return;
+    // }
+    // if (age <= 0 || age > 80) {
+    //   alert("Age must be between 1 and 80 years");
+    //   return;
+    // }
 
     const { data: userData, error: userError } = await supabase.auth.getUser();
 
     if (userData) {
-      const { data: metricsData, error: metricsError } = await supabase.from("user_metrics").insert({
-        id: userData.user.id,
-        weight: formData.weight,
-        height: formData.height,
-        age: formData.age,
-        gender: formData.gender,
-        activity: formData.activity,
-      });
+      const { data: metricsData, error: metricsError } = await supabase
+        .from("user_metrics")
+        .insert({
+          id: userData.user.id,
+          weight: formData.weight,
+          height: formData.height,
+          age: formData.age,
+          gender: formData.gender,
+          activity: formData.activity,
+        });
 
       if (metricsData) {
         console.log(metricsData);
@@ -75,23 +98,25 @@ const IntroForm = () => {
       formData.height,
       formData.age,
       formData.gender,
-      formData.activity,
-    )
+      formData.activity
+    );
 
-    const { data: nutritionData, error: nutritionError } = await supabase.from('user_nutrition').insert({
-      id: userData.user.id,
-      calories: bmi.toFixed(0),
-      protein: protein.toFixed(0),
-      carbs: carbs.toFixed(0),
-      total_fat: total_fat.toFixed(0),
-    })
+    const { data: nutritionData, error: nutritionError } = await supabase
+      .from("user_nutrition")
+      .insert({
+        id: userData.user.id,
+        calories: bmi.toFixed(0),
+        protein: protein.toFixed(0),
+        carbs: carbs.toFixed(0),
+        total_fat: total_fat.toFixed(0),
+      });
 
     if (nutritionData) {
-      console.log(nutritionData)
+      console.log(nutritionData);
     }
 
     if (nutritionError) {
-      console.log(nutritionError)
+      console.log(nutritionError);
     }
 
     if (userError) {
@@ -103,8 +128,8 @@ const IntroForm = () => {
     }, 300);
   };
 
+  // Function to handle changes in form inputs
   const handleChange = (e) => {
-    console.log(e);
     const { name, value } = e.target;
     setFormData((prevValue) => ({
       ...prevValue,
@@ -143,26 +168,35 @@ const IntroForm = () => {
           <Input
             placeholder="Weight (kg)"
             type="number"
+            min="1"
+            max="500"
             onChange={handleChange}
             name="weight"
             value={formData.weight}
             className="w-full"
+            required
           />
           <Input
             placeholder="Height (cm)"
             type="number"
+            min="1"
+            max="250"
             name="height"
             className="w-full"
             onChange={handleChange}
             value={formData.height}
+            required
           />
           <Input
             placeholder="Age"
             name="age"
             type="number"
+            min="1"
+            max="80"
             className="w-full"
             onChange={handleChange}
             value={formData.age}
+            required
           />
           <div className="space-y-8">
             <Select value={formData.gender} onValueChange={handleGenderChange}>

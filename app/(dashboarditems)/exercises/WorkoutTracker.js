@@ -110,11 +110,11 @@ const WorkoutTracker = () => {
       prevValue.map((workout) =>
         workout.id === workoutId
           ? {
-            ...workout,
-            sets: workout.sets.map((set, index) =>
-              index === setIndex ? { ...set, [name]: value } : set
-            ),
-          }
+              ...workout,
+              sets: workout.sets.map((set, index) =>
+                index === setIndex ? { ...set, [name]: value } : set
+              ),
+            }
           : workout
       )
     ); // Updating the weight or reps for a specific set.
@@ -126,9 +126,9 @@ const WorkoutTracker = () => {
       prevWorkoutLog.map((workout) =>
         workout.id === workoutId
           ? {
-            ...workout,
-            sets: [...workout.sets, { weight: null, reps: null }],
-          }
+              ...workout,
+              sets: [...workout.sets, { weight: null, reps: null }],
+            }
           : workout
       )
     ); // Adding a new set to a specific exercise.
@@ -153,7 +153,8 @@ const WorkoutTracker = () => {
               name="name"
               value={excerciseName.name}
               onChange={handleNameChange}
-            /> {/* Input field for entering the workout name */}
+            />{" "}
+            {/* Input field for entering the workout name */}
           </form>
           {workoutLog.length > 0 && (
             <div className="">
@@ -164,7 +165,8 @@ const WorkoutTracker = () => {
                   onClick={submitData}
                 >
                   Finish
-                </Button> {/* Button to submit the workout data */}
+                </Button>{" "}
+                {/* Button to submit the workout data */}
               </Link>
             </div>
           )}
@@ -173,10 +175,14 @@ const WorkoutTracker = () => {
           workoutLog.flatMap((workout, index) => (
             <div className="flex justify-center flex-col">
               <div key={index} className="py-5">
-                <p className="text-lg font-bold">{workout.exerciseName}</p> {/* Displaying the exercise name */}
+                <p className="text-lg font-bold">{workout.exerciseName}</p>{" "}
+                {/* Displaying the exercise name */}
                 {workout.sets.map((set, setIndex) => (
                   <>
-                    <p key={setIndex} className="py-4">Set {setIndex + 1}</p> {/* Displaying set number */}
+                    <p key={setIndex} className="py-4">
+                      Set {setIndex + 1}
+                    </p>{" "}
+                    {/* Displaying set number */}
                     <div className=" ">
                       <form className=" flex lg:space-x-4 sm:space-x-0">
                         <Input
@@ -188,17 +194,23 @@ const WorkoutTracker = () => {
                           name="weight"
                           value={set.weight}
                           className="border px-2 py-2"
-                        /> {/* Input for weight */}
+                          required
+                        />{" "}
+                        {/* Input for weight */}
                         <Input
-                          type="number"
                           placeholder="reps"
+                          type="number"
+                          min="1"
+                          max="1000"
+                          name="reps"
+                          className="border px-2 py-2"
                           onChange={(event) =>
                             handleChange(event, workout.id, setIndex)
                           }
-                          name="reps"
                           value={set.reps}
-                          className="border px-2 py-2"
-                        /> {/* Input for reps */}
+                          required
+                        />{" "}
+                        {/* Input for reps */}
                       </form>
                     </div>
                   </>
@@ -210,7 +222,8 @@ const WorkoutTracker = () => {
                   >
                     <Plus className="mr-2 h-4 w-4" />
                     Add Set
-                  </Button> {/* Button to add another set */}
+                  </Button>{" "}
+                  {/* Button to add another set */}
                 </div>
               </div>
             </div>
@@ -231,7 +244,8 @@ const WorkoutTracker = () => {
                   {item.exercise}
                 </option>
               ))}
-            </select> {/* Dropdown to select an exercise */}
+            </select>{" "}
+            {/* Dropdown to select an exercise */}
           </>
         ) : (
           <div className="flex justify-center ">
@@ -240,13 +254,15 @@ const WorkoutTracker = () => {
               onClick={() => setShowAddDropdown(true)}
             >
               Add Exercise
-            </Button> {/* Button to show the add exercise dropdown */}
+            </Button>{" "}
+            {/* Button to show the add exercise dropdown */}
           </div>
         )}
         <div className="flex justify-center my-4">
           <Button variant="destructive" className="w-32" asChild>
             <Link href="/workouts">Cancel Workout</Link>
-          </Button> {/* Button to cancel the workout */}
+          </Button>{" "}
+          {/* Button to cancel the workout */}
         </div>
       </div>
     </div>
