@@ -10,12 +10,34 @@ const NutritionStats = () => {
   const [totalCarbs, setTotalCarbs] = useState(0);
   const [totalFat, setTotalFat] = useState(0);
 
+  const [bmi, setBmi] = useState(0);
+  const [dailyProtein, setDailyProtein] = useState(0);
+  const [dailyCarbs, setDailyCarbs] = useState(0);
+  const [dailyFat, setDailyFat] = useState(0);
+
   useEffect(() => {
     const fetchData = async () => {
       const { data: userData, error: userError } =
         await supabase.auth.getUser();
 
       if (userData) {
+        const { data: userNutrition, error: nutritionError } = await supabase
+          .from('user_nutrition')
+          .select('*')
+          .eq("id", userData.user.id)
+          .single()
+
+        if (userNutrition) {
+          setBmi(userNutrition.calories);
+          setDailyProtein(userNutrition.protein);
+          setDailyCarbs(userNutrition.carbs);
+          setDailyFat(userNutrition.total_fat);
+        }
+
+        if (nutritionError) {
+          console.log(nutritionError)
+        }
+
         const { data, error } = await supabase
           .from("food_log")
           .select()
@@ -29,11 +51,6 @@ const NutritionStats = () => {
           const currentDate = new Date().toDateString();
           const filteredNutritionData = data.filter(
             (entry) => new Date(entry.created_at).toDateString() === currentDate
-          );
-          console.log(filteredNutritionData);
-          console.log(currentDate);
-          console.log(
-            data.map((entry) => new Date(entry.created_at).toDateString())
           );
 
           const calorieTotal = filteredNutritionData.reduce(
@@ -74,23 +91,23 @@ const NutritionStats = () => {
       <div className="flex space-x-12">
         <div className="text-center">
           <h2>Calories Eaten</h2>
-          <h1>{totalCalories} cal</h1>
-          <Progress value={(totalCalories / 2500) * 100} className="" />
+          <h1>{totalCalories} / {bmi} kcal</h1>
+          <Progress value={(totalCalories / bmi) * 100} className="" />
         </div>
         <div className="text-center">
           <h2>Protein</h2>
-          <h1>{totalProtein} g</h1>
-          <Progress value={(totalProtein / 125) * 100} className="" />
+          <h1>{totalProtein} / {dailyProtein} g</h1>
+          <Progress value={(totalProtein / dailyProtein) * 100} className="" />
         </div>
         <div className="text-center">
           <h2>Carbohydrates</h2>
-          <h1>{totalCarbs} g</h1>
-          <Progress value={(totalCarbs / 300) * 100} className="" />
+          <h1>{totalCarbs} / {dailyCarbs} g</h1>
+          <Progress value={(totalCarbs / dailyCarbs) * 100} className="" />
         </div>
         <div className="text-center">
           <h2>Total Fat</h2>
-          <h1>{totalFat} g</h1>
-          <Progress value={(totalFat / 60) * 100} className="" />
+          <h1>{totalFat} / {dailyFat} g</h1>
+          <Progress value={(totalFat / dailyFat) * 100} className="" />
         </div>
       </div>
     </div>
