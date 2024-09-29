@@ -1,52 +1,68 @@
+import { Button } from "@/components/ui/button";
 import { login, signup } from "./actions";
+import { Input } from "@/components/ui/input";
+import Image from "next/image";
 
 export default function LoginPage() {
   return (
-    <div className="flex justify-center items-center min-h-screen">
-      <div className="bg-blue-100 max-w-md w-full p-8 rounded-lg shadow-md flex justify-center ">
-        <form className="mt-8 space-y-6">
-          <div className="flex justify-center">
-            <h1 className="text-3xl font-extrabold text-gray-900">
-              Account Access
-            </h1>
-          </div>
+    <div className="flex justify-center items-center min-h-screen bg-gray-50">
+      <div className="bg-white max-w-lg w-full p-10 rounded-2xl shadow-lg">
+        <div className="flex justify-center pb-8">
+          <Image src="/images/logo.png" alt="Logo" width={150} height={150} />
+        </div>
+        <div className="flex justify-center mb-6">
+          <h1 className="text-3xl font-extrabold text-blue-900">
+            Welcome to Summit Fitness
+          </h1>
+        </div>
+        <form className="space-y-6">
           <div>
-            <label htmlFor="email" className="mr-4">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700"
+            >
               Email:
             </label>
-            <input
+            <Input
               id="email"
               name="email"
               type="email"
+              minLength="5"
+              maxLength="50"
               required
-              className="w-full px-3 py-2 border border-gray-300"
+              className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
           <div>
-            <label htmlFor="password" className="mr-4">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700"
+            >
               Password:
             </label>
-            <input
+            <Input
               id="password"
               name="password"
               type="password"
+              minLength="8"
+              maxLength="64"
               required
-              className="w-full px-3 py-2 border border-gray-300"
+              className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
           <div className="space-y-4">
-            <button
+            <Button
               formAction={login}
-              className=" w-full py-2 px-4 border rounded-md text-sm bg-blue-950 text-white "
+              className="w-full py-2 px-4 bg-blue-950 text-white rounded-md hover:bg-blue-800 transition"
             >
               Log in
-            </button>
-            <button
+            </Button>
+            <Button
               formAction={signup}
-              className=" w-full py-2 px-4 border rounded-md text-sm "
+              className="w-full py-2 px-4 border border-gray-300 text-white rounded-md text-sm  hover:bg-gray-100 transition"
             >
               Sign up
-            </button>
+            </Button>
           </div>
         </form>
       </div>

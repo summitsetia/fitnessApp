@@ -13,6 +13,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  SelectGroup,
 } from "@/components/ui/select"; // Importing Select components for creating dropdowns.
 
 const WorkoutTracker = () => {
@@ -83,14 +84,13 @@ const WorkoutTracker = () => {
     }
   };
 
-  function addExercise(event) {
-    const { value } = event.target; // Destructuring value from the event target.
-    if (value !== "default") {
+  function addExercise(e) {
+    if (e !== "default") {
       setWorkoutLog([
         ...workoutLog,
         {
           id: workoutLog.length + 1,
-          exerciseName: value,
+          exerciseName: e,
           sets: [
             {
               weight: null,
@@ -161,7 +161,7 @@ const WorkoutTracker = () => {
               <Link href="/workouts">
                 <Button
                   variant="ghost"
-                  className="bg-green-200"
+                  className="bg-green-400 hover:bg-green-200"
                   onClick={submitData}
                 >
                   Finish
@@ -230,7 +230,7 @@ const WorkoutTracker = () => {
           ))}
         {showAddDropdown ? (
           <>
-            <label htmlFor="exercise">Choose an exercise: </label>
+            {/* <label htmlFor="exercise">Choose an exercise: </label>
             <select
               name="exercise"
               id="exercise"
@@ -244,13 +244,28 @@ const WorkoutTracker = () => {
                   {item.exercise}
                 </option>
               ))}
-            </select>{" "}
+            </select>{" "} */}
+
+            <Select value={selectedExercise} onValueChange={addExercise}>
+              <SelectTrigger>
+                <SelectValue placeholder="Choose an exercise:" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {exerciseData.map((item) => (
+                    <SelectItem key={item.id} value={item.exercise}>
+                      {item.exercise}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
             {/* Dropdown to select an exercise */}
           </>
         ) : (
           <div className="flex justify-center ">
             <Button
-              className="w-32 bg-blue-200"
+              className="w-32 hover:bg-blue-400"
               onClick={() => setShowAddDropdown(true)}
             >
               Add Exercise
