@@ -1,6 +1,7 @@
-"use client"; // This directive indicates that the component should be rendered on the client-side.
+"use client";
 
 import React, { useState } from "react"; // Importing React and the useState hook.
+import { useRouter } from "next/router"; // Importing the useRouter hook from Next.js.
 import exerciseData from "@/public/exerciseData.json"; // Importing exercise data from a JSON file.
 import { createClient } from "@/utils/supabase/client"; // Importing a function to create a Supabase client.
 import { Button } from "@/components/ui/button"; // Importing a Button component.
@@ -17,23 +18,24 @@ import {
 } from "@/components/ui/select"; // Importing Select components for creating dropdowns.
 
 const WorkoutTracker = () => {
-  const [showAddDropdown, setShowAddDropdown] = useState(false); // State to toggle the visibility of the add exercise dropdown.
-  const [workoutLog, setWorkoutLog] = useState([]); // State to store the workout log data.
-  const [excerciseName, setExcerciseName] = useState({ name: "" }); // State to store the name of the exercise.
-  const [selectedExercise] = useState(""); // State to store the selected exercise.
-  const supabase = createClient(); // Creating a Supabase client instance.
+  const [showAddDropdown, setShowAddDropdown] = useState(false);
+  const [workoutLog, setWorkoutLog] = useState([]);
+  const [excerciseName, setExcerciseName] = useState({ name: "" });
+  const supabase = createClient();
+  const router = useRouter();
+  const [errorMessage, setErrorMessage] = useState(""); // New state for error message
 
-  const submitData = async () => {
-    const { data, error } = await supabase.auth.getUser(); // Retrieving the current authenticated user.
+  const submitData = async (e) => {
+    e.preventDefault();
+
+    const { data, error } = await supabase.auth.getUser();
     if (data) {
-      console.log(data); // Logging user data.
       const { data: workoutData, error: workoutError } = await supabase
         .from("workouts")
         .insert({ users_id: data.user.id, workout_name: excerciseName.name })
-        .select("*"); // Inserting workout data into the "workouts" table.
+        .select("*");
 
       if (workoutData) {
-        console.log(workoutData); // Logging inserted workout data.
         const { data: excerciseData, error: excerciseError } = await supabase
           .from("excercises")
           .insert(
@@ -42,10 +44,9 @@ const WorkoutTracker = () => {
               name: excercise.exerciseName,
             }))
           )
-          .select("*"); // Inserting exercises into the "excercises" table.
+          .select("*");
 
         if (excerciseData) {
-          console.log(excerciseData); // Logging inserted exercise data.
           const { data: setsData, error: setsError } = await supabase
             .from("sets")
             .insert(
@@ -58,30 +59,30 @@ const WorkoutTracker = () => {
                 }))
               )
             )
-            .select("*"); // Inserting sets into the "sets" table.
-
-          if (setsData) {
-            console.log(setsData); // Logging inserted sets data.
-          }
+            .select("*");
 
           if (setsError) {
-            console.log(setsError); // Logging sets insertion error.
+            console.log(setsError);
           }
         }
 
         if (excerciseError) {
-          console.log(excerciseError); // Logging exercise insertion error.
+          console.log(excerciseError);
         }
       }
 
       if (workoutError) {
-        console.log(workoutError); // Logging workout insertion error.
+        console.log(workoutError);
       }
     }
 
     if (error) {
-      console.log(error); // Logging user retrieval error.
+      console.log(error);
     }
+
+    setTimeout(() => {
+      router.push("/workouts");
+    }, 300);
   };
 
   function addExercise(e) {
@@ -98,13 +99,13 @@ const WorkoutTracker = () => {
             },
           ],
         },
-      ]); // Adding a new exercise to the workout log.
-      setShowAddDropdown(false); // Hiding the add exercise dropdown.
+      ]);
+      setShowAddDropdown(false);
     }
   }
 
   function handleChange(event, workoutId, setIndex) {
-    const { name, value } = event.target; // Destructuring name and value from the event target.
+    const { name, value } = event.target;
 
     setWorkoutLog((prevValue) =>
       prevValue.map((workout) =>
@@ -117,11 +118,10 @@ const WorkoutTracker = () => {
             }
           : workout
       )
-    ); // Updating the weight or reps for a specific set.
+    );
   }
 
   function handleAddSet(workoutId) {
-    console.log(workoutId); // Logging the workout ID.
     setWorkoutLog((prevWorkoutLog) =>
       prevWorkoutLog.map((workout) =>
         workout.id === workoutId
@@ -131,22 +131,19 @@ const WorkoutTracker = () => {
             }
           : workout
       )
-    ); // Adding a new set to a specific exercise.
+    );
   }
 
   const handleNameChange = (event) => {
-    const { name, value } = event.target; // Destructuring name and value from the event target.
-    setExcerciseName(() => ({
-      [name]: value,
-    })); // Updating the exercise name.
-    console.log(excerciseName); // Logging the exercise name.
+    const { name, value } = event.target;
+    setExcerciseName(() => ({ [name]: value }));
   };
 
   return (
     <div className="flex justify-center">
-      <div className="">
-        <div className="flex justify-between">
-          <form className="pb-4">
+      <form onSubmit={submitData}>
+        <div className="">
+          <div className="flex justify-between">
             <Input
               type="text"
               placeholder="Workout Name"
@@ -155,38 +152,22 @@ const WorkoutTracker = () => {
               onChange={handleNameChange}
             />{" "}
             {/* Input field for entering the workout name */}
-          </form>
-          {workoutLog.length > 0 && (
-            <div className="">
-              <Link href="/workouts">
-                <Button
-                  variant="ghost"
-                  className="bg-green-400 hover:bg-green-200"
-                  onClick={submitData}
-                >
-                  Finish
-                </Button>{" "}
-                {/* Button to submit the workout data */}
-              </Link>
-            </div>
-          )}
-        </div>
-        {workoutLog.length > 0 &&
-          workoutLog.flatMap((workout, index) => (
-            <div className="flex justify-center flex-col">
-              <div key={index} className="py-5">
-                <p className="text-lg font-bold">{workout.exerciseName}</p>{" "}
-                {/* Displaying the exercise name */}
-                {workout.sets.map((set, setIndex) => (
-                  <>
-                    <p key={setIndex} className="py-4">
-                      Set {setIndex + 1}
-                    </p>{" "}
-                    {/* Displaying set number */}
-                    <div className=" ">
-                      <form className=" flex lg:space-x-4 sm:space-x-0">
+          </div>
+          {errorMessage && <p className="text-red-500">{errorMessage}</p>}{" "}
+          {/* Display validation error */}
+          {workoutLog.length > 0 &&
+            workoutLog.flatMap((workout, index) => (
+              <div className="flex justify-center flex-col" key={index}>
+                <div className="py-5">
+                  <p className="text-lg font-bold">{workout.exerciseName}</p>
+                  {workout.sets.map((set, setIndex) => (
+                    <div key={setIndex}>
+                      <p className="py-4">Set {setIndex + 1}</p>
+                      <div className="flex lg:space-x-4 sm:space-x-0">
                         <Input
                           type="number"
+                          min="1"
+                          max="100"
                           placeholder="weight (in kg)"
                           onChange={(event) =>
                             handleChange(event, workout.id, setIndex)
@@ -195,13 +176,12 @@ const WorkoutTracker = () => {
                           value={set.weight}
                           className="border px-2 py-2"
                           required
-                        />{" "}
-                        {/* Input for weight */}
+                        />
                         <Input
                           placeholder="reps"
                           type="number"
                           min="1"
-                          max="1000"
+                          max="100"
                           name="reps"
                           className="border px-2 py-2"
                           onChange={(event) =>
@@ -209,44 +189,24 @@ const WorkoutTracker = () => {
                           }
                           value={set.reps}
                           required
-                        />{" "}
-                        {/* Input for reps */}
-                      </form>
+                        />
+                      </div>
                     </div>
-                  </>
-                ))}
-                <div className="mt-4">
-                  <Button
-                    variant="outline"
-                    onClick={() => handleAddSet(workout.id)}
-                  >
-                    <Plus className="mr-2 h-4 w-4" />
-                    Add Set
-                  </Button>{" "}
-                  {/* Button to add another set */}
+                  ))}
+                  <div className="mt-4">
+                    <Button
+                      variant="outline"
+                      onClick={() => handleAddSet(workout.id)}
+                    >
+                      <Plus className="mr-2 h-4 w-4" />
+                      Add Set
+                    </Button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        {showAddDropdown ? (
-          <>
-            {/* <label htmlFor="exercise">Choose an exercise: </label>
-            <select
-              name="exercise"
-              id="exercise"
-              form="exerciseform"
-              onChange={addExercise}
-              value={selectedExercise}
-            >
-              <option value="default">Choose An Exercise</option>
-              {exerciseData.map((item) => (
-                <option key={item.id} value={item.exercise}>
-                  {item.exercise}
-                </option>
-              ))}
-            </select>{" "} */}
-
-            <Select value={selectedExercise} onValueChange={addExercise}>
+            ))}
+          {showAddDropdown ? (
+            <Select onValueChange={addExercise}>
               <SelectTrigger>
                 <SelectValue placeholder="Choose an exercise:" />
               </SelectTrigger>
@@ -260,28 +220,32 @@ const WorkoutTracker = () => {
                 </SelectGroup>
               </SelectContent>
             </Select>
-            {/* Dropdown to select an exercise */}
-          </>
-        ) : (
-          <div className="flex justify-center ">
+          ) : (
+            <div className="flex justify-center">
+              <Button
+                className="w-32 bg-blue-200"
+                onClick={() => setShowAddDropdown(true)}
+              >
+                Add Exercise
+              </Button>
+            </div>
+          )}
+        </div>
+
+        {workoutLog.length > 0 && (
+          <div className="flex justify-center mt-6">
             <Button
-              className="w-32 hover:bg-blue-400"
-              onClick={() => setShowAddDropdown(true)}
+              variant="ghost"
+              className="bg-green-400 hover:bg-green-200"
+              onClick={submitData}
             >
-              Add Exercise
-            </Button>{" "}
-            {/* Button to show the add exercise dropdown */}
+              Finish
+            </Button>
           </div>
         )}
-        <div className="flex justify-center my-4">
-          <Button variant="destructive" className="w-32" asChild>
-            <Link href="/workouts">Cancel Workout</Link>
-          </Button>{" "}
-          {/* Button to cancel the workout */}
-        </div>
-      </div>
+      </form>
     </div>
   );
 };
 
-export default WorkoutTracker; // Exporting the WorkoutTracker component as the default export.
+export default WorkoutTracker;
