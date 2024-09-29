@@ -6,7 +6,9 @@ import { Info } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
+// hooks are being imported from react, functions are being imported from supabase, icons are being imported from lucide react
 
+// component is rendering three of the same components with different values being passed in
 const AddMeal = () => {
   return (
     <div className="flex flex-col items-center justify-center">

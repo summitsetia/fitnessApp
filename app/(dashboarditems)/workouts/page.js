@@ -2,6 +2,7 @@ import React from "react";
 import NewWorkout from "./NewWorkout";
 import WorkoutHistory from "./WorkoutHistory";
 
+// page containing the button which allows you to create a new workout and the workoutHistory component, it is importing newWorkout and WorkoutHistory
 export default function Home() {
   return (
     <div className="flex flex-col items-center mt-16 space-y-16">

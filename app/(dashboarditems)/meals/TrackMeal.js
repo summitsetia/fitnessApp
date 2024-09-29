@@ -5,6 +5,7 @@ import { createClient } from "../../../utils/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useSearchParams } from "next/navigation";
+// hooks are being imported from react and function is being imported from supabase, search params are being imported from nextJS
 
 const TrackMeal = () => {
   const supabase = createClient();
@@ -17,8 +18,10 @@ const TrackMeal = () => {
   const [fetchError, setFetchError] = useState(null);
   const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
   const [formData, setFormData] = useState({ foodQuantity: "", foodName: "" });
+  // defining variables and states
 
   const updateTable = async (calories, protein, carbs, totalFat) => {
+    // the table being updated with information from api
     console.log("clicked");
     console.log("calories from updateTable", calories);
 
@@ -47,6 +50,7 @@ const TrackMeal = () => {
   };
 
   const handleChange = (event) => {
+    // when the value of an input changes this function runs to update the value in the object
     setFormData((prevData) => ({
       ...prevData,
       [event.target.name]: event.target.value,
@@ -70,6 +74,7 @@ const TrackMeal = () => {
   };
 
   const handleSubmit = (event) => {
+    // on submit the users response is being sent to the api and its response is being passed in to the updateTable function along with updating the object
     event.preventDefault();
     if (!validateInputs()) return;
 

@@ -2,6 +2,7 @@
 import { createClient } from "@/utils/supabase/client";
 import { useState, useEffect } from "react";
 import { Progress } from "@/components/ui/progress";
+// hooks are being imported from react and functions are being imported from supabase
 
 const NutritionStats = () => {
   const supabase = createClient();
@@ -14,18 +15,20 @@ const NutritionStats = () => {
   const [dailyProtein, setDailyProtein] = useState(0);
   const [dailyCarbs, setDailyCarbs] = useState(0);
   const [dailyFat, setDailyFat] = useState(0);
+  // variables and states are being defined
 
   useEffect(() => {
+    // fetching the data from the food_log table, data is filtered to match today's date and is accumulated
     const fetchData = async () => {
       const { data: userData, error: userError } =
         await supabase.auth.getUser();
 
       if (userData) {
         const { data: userNutrition, error: nutritionError } = await supabase
-          .from('user_nutrition')
-          .select('*')
+          .from("user_nutrition")
+          .select("*")
           .eq("id", userData.user.id)
-          .single()
+          .single();
 
         if (userNutrition) {
           setBmi(userNutrition.calories);
@@ -35,7 +38,7 @@ const NutritionStats = () => {
         }
 
         if (nutritionError) {
-          console.log(nutritionError)
+          console.log(nutritionError);
         }
 
         const { data, error } = await supabase
@@ -91,22 +94,30 @@ const NutritionStats = () => {
       <div className="flex space-x-12">
         <div className="text-center">
           <h2>Calories Eaten</h2>
-          <h1>{totalCalories} / {bmi} kcal</h1>
+          <h1>
+            {totalCalories} / {bmi} kcal
+          </h1>
           <Progress value={(totalCalories / bmi) * 100} className="" />
         </div>
         <div className="text-center">
           <h2>Protein</h2>
-          <h1>{totalProtein} / {dailyProtein} g</h1>
+          <h1>
+            {totalProtein} / {dailyProtein} g
+          </h1>
           <Progress value={(totalProtein / dailyProtein) * 100} className="" />
         </div>
         <div className="text-center">
           <h2>Carbohydrates</h2>
-          <h1>{totalCarbs} / {dailyCarbs} g</h1>
+          <h1>
+            {totalCarbs} / {dailyCarbs} g
+          </h1>
           <Progress value={(totalCarbs / dailyCarbs) * 100} className="" />
         </div>
         <div className="text-center">
           <h2>Total Fat</h2>
-          <h1>{totalFat} / {dailyFat} g</h1>
+          <h1>
+            {totalFat} / {dailyFat} g
+          </h1>
           <Progress value={(totalFat / dailyFat) * 100} className="" />
         </div>
       </div>

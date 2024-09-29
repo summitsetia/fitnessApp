@@ -11,6 +11,7 @@ const WorkoutHistory = () => {
   const [showHistory, setShowHistory] = useState(false); // State to control visibility of history
 
   useEffect(() => {
+    // getting workout data from supabase
     const fetchData = async () => {
       const { data: userData, error: userError } =
         await supabase.auth.getUser();

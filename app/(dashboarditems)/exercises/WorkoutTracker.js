@@ -1,13 +1,13 @@
-"use client";
+"use client"; // This indicates that this component should be rendered on the client-side
 
-import React, { useState } from "react"; // Importing React and the useState hook.
-import { useRouter } from "next/router"; // Importing the useRouter hook from Next.js.
-import exerciseData from "@/public/exerciseData.json"; // Importing exercise data from a JSON file.
-import { createClient } from "@/utils/supabase/client"; // Importing a function to create a Supabase client.
-import { Button } from "@/components/ui/button"; // Importing a Button component.
-import { Plus } from "lucide-react"; // Importing a Plus icon from the lucide-react library.
-import Link from "next/link"; // Importing the Link component for client-side navigation.
-import { Input } from "@/components/ui/input"; // Importing an Input component.
+// importing hooks from react, exerciseData from json file and components from supabase, shadCN and lucide react
+import React, { useState } from "react";
+import { useRouter } from "next/router";
+import exerciseData from "@/public/exerciseData.json";
+import { createClient } from "@/utils/supabase/client";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -15,17 +15,19 @@ import {
   SelectTrigger,
   SelectValue,
   SelectGroup,
-} from "@/components/ui/select"; // Importing Select components for creating dropdowns.
+} from "@/components/ui/select";
 
 const WorkoutTracker = () => {
+  // defining the variables and setting states
   const [showAddDropdown, setShowAddDropdown] = useState(false);
   const [workoutLog, setWorkoutLog] = useState([]);
   const [excerciseName, setExcerciseName] = useState({ name: "" });
   const supabase = createClient();
   const router = useRouter();
-  const [errorMessage, setErrorMessage] = useState(""); // New state for error message
+  const [errorMessage, setErrorMessage] = useState("");
 
   const submitData = async (e) => {
+    // on submit of the button workout data for the workout, exercise, sets, weights and reps are submitted to their respective tables in supabase by iterating over the array of objects
     e.preventDefault();
 
     const { data, error } = await supabase.auth.getUser();
@@ -105,6 +107,7 @@ const WorkoutTracker = () => {
   }
 
   function handleChange(event, workoutId, setIndex) {
+    // on change of the value of an input this function runs to update the value in the array of objects
     const { name, value } = event.target;
 
     setWorkoutLog((prevValue) =>
@@ -122,6 +125,7 @@ const WorkoutTracker = () => {
   }
 
   function handleAddSet(workoutId) {
+    // when add set is pressed, a new object is created in sets, representing another set
     setWorkoutLog((prevWorkoutLog) =>
       prevWorkoutLog.map((workout) =>
         workout.id === workoutId
@@ -135,6 +139,7 @@ const WorkoutTracker = () => {
   }
 
   const handleNameChange = (event) => {
+    // when the value of the input for the workout name changes, this function runs which updates its value in the object
     const { name, value } = event.target;
     setExcerciseName(() => ({ [name]: value }));
   };
@@ -154,7 +159,6 @@ const WorkoutTracker = () => {
             {/* Input field for entering the workout name */}
           </div>
           {errorMessage && <p className="text-red-500">{errorMessage}</p>}{" "}
-          {/* Display validation error */}
           {workoutLog.length > 0 &&
             workoutLog.flatMap((workout, index) => (
               <div className="flex justify-center flex-col" key={index}>

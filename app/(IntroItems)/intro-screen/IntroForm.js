@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+// importing react hooks, functions from supabase, router from nextjs and components from shadCN
 
 // Nutrition calculation function
 const calculatedNutrition = (weight, height, age, gender, activity) => {
