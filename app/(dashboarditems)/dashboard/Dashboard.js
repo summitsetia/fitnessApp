@@ -21,6 +21,7 @@ const Dashboard = () => {
       if (userData) {
         console.log(`userdata: ${userData}`);
 
+        // getting data from the food_log table
         const { data, error } = await supabase
           .from("food_log")
           .select()
@@ -33,12 +34,14 @@ const Dashboard = () => {
 
         if (data) {
           console.log(data);
+          // filtering data to be equal to todays date
           const todaysDate = new Date().toDateString();
           const filteredNutritionArray = data.filter(
             (entry) => new Date(entry.created_at).toDateString() === todaysDate
           );
           console.log(filteredNutritionArray);
 
+          // accumulating nutrition data
           const calorieTotal = filteredNutritionArray.reduce(
             (accumulator, element) => accumulator + element.calories,
             0
@@ -62,12 +65,14 @@ const Dashboard = () => {
         console.log(userError);
       }
 
+      // getting data from workouts table
       const { data: workoutData, error: workoutError } = await supabase
         .from("workouts")
         .select("*")
         .eq("users_id", userData.user.id);
 
       if (workoutData) {
+        // filtering the data to be from the last 7 days
         const currentDate = new Date();
         const oneWeekAgoDate = new Date();
         oneWeekAgoDate.setDate(currentDate.getDate() - 7);

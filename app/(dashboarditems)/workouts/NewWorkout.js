@@ -4,15 +4,15 @@ import Link from "next/link"; // Import the Link component from Next.js for clie
 // Export a functional component called NewWorkout
 export const NewWorkout = () => {
   return (
-    <div className="flex justify-center"> {/* Center the content horizontally using flexbox */}
-      <Link href="/exercises"> {/* Create a link that navigates to the /exercises page */}
+    <div className="flex justify-center">
+      <Link href="/exercises">
+        {" "}
+        {/* Create a link that navigates to the /exercises page */}
         <Button
           variant="ghost" // Set the variant of the Button to "ghost" (specific style defined elsewhere)
           className="bg-blue-500 text-white w-full max-w-lg h-14 text-xl rounded-lg shadow-lg hover:bg-blue-600 transition-all duration-300"
-        // Apply custom styles: blue background, white text, full width with max width, height, large text,
-        // rounded corners, shadow, background color change on hover, and smooth transition
         >
-          Start An Empty Workout {/* The text displayed inside the button */}
+          Start An Empty Workout
         </Button>
       </Link>
     </div>

@@ -27,6 +27,7 @@ const MealRedirect = ({ mealType, reccCalories }) => {
   const supabase = createClient();
   const [mealInfo, setMealInfo] = useState(false);
   const [mealData, setMealData] = useState([]);
+  // getting data from the food_log table
   useEffect(() => {
     const fetchData = async () => {
       const { data, error } = await supabase.from("food_log").select("*");
@@ -34,6 +35,7 @@ const MealRedirect = ({ mealType, reccCalories }) => {
       if (data) {
         console.log(data);
         const currentDate = new Date().toDateString();
+        // filtering data to match the current date
         const filteredNutritionData = data.filter(
           (entry) =>
             new Date(entry.created_at).toDateString() === currentDate &&
@@ -51,6 +53,7 @@ const MealRedirect = ({ mealType, reccCalories }) => {
 
     fetchData();
   }, []);
+  // accumulating the calories
   const addedData = mealData.reduce(
     (accumulator, entry) => accumulator + entry.calories,
     0

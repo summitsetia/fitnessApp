@@ -78,6 +78,7 @@ const TrackMeal = () => {
     event.preventDefault();
     if (!validateInputs()) return;
 
+    // getting data from nutrition api
     Axios.get(
       `https://api.calorieninjas.com/v1/nutrition?query=${formData.foodQuantity}g ${formData.foodName}`,
       {
@@ -86,6 +87,7 @@ const TrackMeal = () => {
         },
       }
     )
+      // running the updateTable function with data from the response from the api
       .then((res) => {
         setCalories(res.data.items[0].calories);
         setProtein(res.data.items[0].protein_g);

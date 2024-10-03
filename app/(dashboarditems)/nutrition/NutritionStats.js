@@ -23,6 +23,7 @@ const NutritionStats = () => {
       const { data: userData, error: userError } =
         await supabase.auth.getUser();
 
+      // getting data from user_nutrition table
       if (userData) {
         const { data: userNutrition, error: nutritionError } = await supabase
           .from("user_nutrition")
@@ -41,6 +42,7 @@ const NutritionStats = () => {
           console.log(nutritionError);
         }
 
+        // getting data from food_log table
         const { data, error } = await supabase
           .from("food_log")
           .select()
@@ -50,6 +52,7 @@ const NutritionStats = () => {
           console.log(error);
         }
 
+        // accumatling nutrition data from the filteredNutritionData
         if (data) {
           const currentDate = new Date().toDateString();
           const filteredNutritionData = data.filter(

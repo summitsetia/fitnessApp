@@ -30,6 +30,7 @@ const WorkoutTracker = () => {
     // on submit of the button workout data for the workout, exercise, sets, weights and reps are submitted to their respective tables in supabase by iterating over the array of objects
     e.preventDefault();
 
+    // inserting data to the workouts table
     const { data, error } = await supabase.auth.getUser();
     if (data) {
       const { data: workoutData, error: workoutError } = await supabase
@@ -37,6 +38,7 @@ const WorkoutTracker = () => {
         .insert({ users_id: data.user.id, workout_name: excerciseName.name })
         .select("*");
 
+      // inserting data to the excercises table
       if (workoutData) {
         const { data: excerciseData, error: excerciseError } = await supabase
           .from("excercises")
@@ -48,6 +50,7 @@ const WorkoutTracker = () => {
           )
           .select("*");
 
+        // inserting data to sets table
         if (excerciseData) {
           const { data: setsData, error: setsError } = await supabase
             .from("sets")
@@ -82,11 +85,13 @@ const WorkoutTracker = () => {
       console.log(error);
     }
 
+    // redirecting the user to workouts page
     setTimeout(() => {
       router.push("/workouts");
     }, 300);
   };
 
+  // adding another exercise to the array
   function addExercise(e) {
     if (e !== "default") {
       setWorkoutLog([

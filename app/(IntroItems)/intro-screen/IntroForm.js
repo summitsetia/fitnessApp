@@ -45,6 +45,7 @@ const IntroForm = () => {
   const supabase = createClient();
   const router = useRouter();
 
+  // formData state
   const [formData, setFormData] = useState({
     weight: "",
     height: "",
@@ -73,6 +74,7 @@ const IntroForm = () => {
 
     const { data: userData, error: userError } = await supabase.auth.getUser();
 
+    // inserting data to the user_metrics table
     if (userData) {
       const { data: metricsData, error: metricsError } = await supabase
         .from("user_metrics")
@@ -94,6 +96,7 @@ const IntroForm = () => {
       }
     }
 
+    // passing in values to the calculatedNutrition function from the formData
     const { bmi, protein, carbs, total_fat } = calculatedNutrition(
       formData.weight,
       formData.height,
@@ -102,6 +105,7 @@ const IntroForm = () => {
       formData.activity
     );
 
+    // inserting data to the user nutrition table
     const { data: nutritionData, error: nutritionError } = await supabase
       .from("user_nutrition")
       .insert({
@@ -138,6 +142,7 @@ const IntroForm = () => {
     }));
   };
 
+  // function to handle changes in the activity select
   const handleActivityChange = (e) => {
     setFormData((prevValue) => ({
       ...prevValue,
@@ -145,6 +150,7 @@ const IntroForm = () => {
     }));
   };
 
+  // function to handle changes in the gender select
   const handleGenderChange = (e) => {
     setFormData((prevValue) => ({
       ...prevValue,
@@ -152,6 +158,7 @@ const IntroForm = () => {
     }));
   };
 
+  // console.logs the formData when the formData array is updated
   useEffect(() => {
     console.log("Updated formData:", formData);
   }, [formData]);
